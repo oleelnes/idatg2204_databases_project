@@ -2,6 +2,24 @@
 
 Group project IDATG2204
 
+  
+# Conceptual and logical models
+For assumptions and models see the file models_and_assumptions_v0.1.pdf in the folder *documentation/models*.  
+For conceptual model see the folder *documentation/models/conceptual_model*.  
+For logical model see the folder *documentation/models/logical_model*.  
+  
+
+  
+  
+  
+  
+  
+
+
+
+
+
+
 ## Getting started
 
 To make it easy for you to get started with GitLab, here's a list of recommended next steps.
