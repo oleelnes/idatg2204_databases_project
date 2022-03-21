@@ -16,8 +16,8 @@ For assumptions and models see the file **models_and_assumptions_v0.1.pdf** in t
 For conceptual model see the folder *documentation/models/conceptual_model*.  
 For logical model see the folder *documentation/models/logical_model*.  
 
-# Milsestone 2
-For SQL databse see the file **idatg2204_2022_group12.sql** in the folder *sql_database*.  
+# Milestone 2
+For SQL database see the file **idatg2204_2022_group12.sql** in the folder *sql_database*.  
 For public endpoint functionality see the file **main.py** in the folder *src*.  
 
 ## Note:

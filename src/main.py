@@ -20,7 +20,13 @@ def index():
 def get_skis():
     if request.method == 'GET':
         cur = mysql.connection.cursor()
-        skis = cur.execute("SELECT * FROM `product`")
+        modelname = request.args.get('modelname')
+        if modelname:
+            skis = cur.execute("SELECT model, type, size, description, MSRPP ,url_photo \
+            FROM `product` \
+            WHERE model = '" + modelname + "'")
+        else:        
+            skis = cur.execute("SELECT model, type, size, description, MSRPP ,url_photo FROM `product`")
         if skis > 0:
             skis = cur.fetchall()
         cur.close()
