@@ -12,7 +12,8 @@ mysql = MySQL(app)
 
 @app.route('/')
 def index():
-    return "Up and running!"
+    message = "Up and running!\nSee the endpoints:\n\n/public"
+    return message
 
 if __name__ == '__main__':
     app.run(debug=True)
