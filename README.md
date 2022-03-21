@@ -28,3 +28,13 @@ https://git.gvk.idi.ntnu.no/course/idatg2204/idatg2204-2022-workspace/andrbl/ida
 - v0.1 - Milestone 1
 - v0.2 - Milestone 2
 - v0.3 - TBD
+
+# How to run
+git clone this repo.  
+Create a virtual python enviorment; See Assignment_3 in blackboard for setup instructions.  
+See reqirements.txt and install the required modules.  
+Start mysql server, if using xammpp click start all.  
+Import the **idatg2204_2022_group12.sql** file located in the folder *sql_database* into phpmyadmin.  
+Run main.py  
+For public endpoint with all models use this uri: *127.0.0.1:5000/public*  
+For public endpoint with model search parameter use this uri: *127.0.0.1:5000/public?modelname=*  
