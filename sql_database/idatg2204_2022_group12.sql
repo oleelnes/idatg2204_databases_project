@@ -27,6 +27,7 @@ SET time_zone = "+00:00";
 -- Table structure for table `customer`
 --
 
+
 CREATE TABLE `customer` (
   `id` int(11) NOT NULL,
   `start_date` date NOT NULL,
@@ -138,6 +139,23 @@ CREATE TABLE `product` (
   `MSRPP` int(11) DEFAULT NULL,
   `url_photo` varchar(255) COLLATE utf8mb4_danish_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_danish_ci;
+
+INSERT INTO `product` (`id`, `model`, `type`, `size`, `description`, `in_production`, `MSRPP`, `url_photo`) VALUES
+('001', 'Race Pro', 'Skate', '142', 'Racing skies, minimum length', '1', '123', 'https://antonclub-res.cloudinary.com/image/upload/e_trim:0/c_fit,g_center,w_2048,h_2048/q_auto/bsg73pagn3vbkpe9wweu.jpg'),
+('002', 'Race Pro', 'Skate', '147', 'Racing skies, short length', '1', '123', 'https://antonclub-res.cloudinary.com/image/upload/e_trim:0/c_fit,g_center,w_2048,h_2048/q_auto/bsg73pagn3vbkpe9wweu.jpg'), 
+('003', 'Race Pro', 'Skate', '152', 'Racing skies, short length', '1', '123', 'https://antonclub-res.cloudinary.com/image/upload/e_trim:0/c_fit,g_center,w_2048,h_2048/q_auto/bsg73pagn3vbkpe9wweu.jpg'),
+('004', 'Race Pro', 'Skate', '157', 'Racing skies, short length', '1', '123', 'https://antonclub-res.cloudinary.com/image/upload/e_trim:0/c_fit,g_center,w_2048,h_2048/q_auto/bsg73pagn3vbkpe9wweu.jpg'),
+('005', 'Race Pro', 'Skate', '162', 'Racing skies, short length', '1', '123', 'https://antonclub-res.cloudinary.com/image/upload/e_trim:0/c_fit,g_center,w_2048,h_2048/q_auto/bsg73pagn3vbkpe9wweu.jpg'),
+('006', 'Race Pro', 'Skate', '167', 'Racing skies, medium length', '1', '130', 'https://antonclub-res.cloudinary.com/image/upload/e_trim:0/c_fit,g_center,w_2048,h_2048/q_auto/bsg73pagn3vbkpe9wweu.jpg'),
+('007', 'Race Pro', 'Skate', '172', 'Racing skies, medium length', '1', '130', 'https://antonclub-res.cloudinary.com/image/upload/e_trim:0/c_fit,g_center,w_2048,h_2048/q_auto/bsg73pagn3vbkpe9wweu.jpg'),
+('008', 'Race Pro', 'Skate', '177', 'Racing skies, medium length', '1', '130', 'https://antonclub-res.cloudinary.com/image/upload/e_trim:0/c_fit,g_center,w_2048,h_2048/q_auto/bsg73pagn3vbkpe9wweu.jpg'),
+('009', 'Race Pro', 'Skate', '182', 'Racing skies, medium length', '1', '130', 'https://antonclub-res.cloudinary.com/image/upload/e_trim:0/c_fit,g_center,w_2048,h_2048/q_auto/bsg73pagn3vbkpe9wweu.jpg'),
+('010', 'Race Pro', 'Skate', '187', 'Racing skies, medium length', '1', '130', 'https://antonclub-res.cloudinary.com/image/upload/e_trim:0/c_fit,g_center,w_2048,h_2048/q_auto/bsg73pagn3vbkpe9wweu.jpg'),
+('011', 'Race Pro', 'Skate', '192', 'Racing skies, long length', '1', '140', 'https://antonclub-res.cloudinary.com/image/upload/e_trim:0/c_fit,g_center,w_2048,h_2048/q_auto/bsg73pagn3vbkpe9wweu.jpg'),
+('012', 'Race Pro', 'Skate', '197', 'Racing skies, long length', '1', '140', 'https://antonclub-res.cloudinary.com/image/upload/e_trim:0/c_fit,g_center,w_2048,h_2048/q_auto/bsg73pagn3vbkpe9wweu.jpg'),
+('013', 'Race Pro', 'Skate', '202', 'Racing skies, long length', '1', '140', 'https://antonclub-res.cloudinary.com/image/upload/e_trim:0/c_fit,g_center,w_2048,h_2048/q_auto/bsg73pagn3vbkpe9wweu.jpg'),
+('014', 'Race Pro', 'Skate', '207', 'Racing skies, maximum length', '1', '140', 'https://antonclub-res.cloudinary.com/image/upload/e_trim:0/c_fit,g_center,w_2048,h_2048/q_auto/bsg73pagn3vbkpe9wweu.jpg'),
+('015', 'Race Speed', 'Skate', '142', 'Racing skies for speed, minimum length', '1', '144', 'https://antonclub-res.cloudinary.com/image/upload/e_trim:0/c_fit,g_center,w_2048,h_2048/q_auto/bsg73pagn3vbkpe9wweu.jpg');
 
 -- --------------------------------------------------------
 

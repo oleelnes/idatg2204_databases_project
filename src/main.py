@@ -1,4 +1,5 @@
-from crypt import methods
+#from crypt import methods
+#from passlib.hash import md5_crypt as md5
 from flask import Flask, request, jsonify
 from flask_mysqldb import MySQL
 
