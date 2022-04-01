@@ -81,6 +81,7 @@ def post_order_state():
     legalStates.append("waiting for pickup")
     legalStates.append("canceled")
     legalStates.append("completed")
+    legalStates.append("fulfilled")
     
     if request.method == 'POST':
         cur = mysql.connection.cursor()
@@ -101,23 +102,30 @@ def post_order_state():
             if legal == 1:
                 order = cur.execute("SELECT * FROM `order` WHERE id = " + orderid)
                 if order > 0:
-                    order.fetchall()
-                    change_order_state = cur.execute("UPDATE `order` SET `order_status`="+ state)
+                    order = cur.fetchall()
+                    change_order_state = cur.execute(f"UPDATE `order` SET `order_status`='{state}'")
                     mysql.connection.commit()
-                #cur.close()
+                    if state == "fulfilled":
+                        create_transport_request(orderid)
                 order = cur.execute("SELECT * FROM `order` WHERE id = " + orderid)
                 if order > 0:
-                    order.fetchall() 
+                    order = cur.fetchall() 
                 return jsonify(order), 201
             else:
                 cur.close()
                 return "Bad request", 404   
         return "Bad request", 404
     return "Error in db", 500
-            
-def create_transport_request():
+
+# Creates a new transport request from the given orderID input parameter            
+def create_transport_request(orderid):
     cur = mysql.connection.cursor()
-    transport = cur.execute("INSERT INTO ")
+    order = cur.execute(f"SELECT id FROM `order` WHERE id = {orderid} AND order_status = 'fulfilled'")
+    if order > 0:
+        transport = cur.execute(f"INSERT INTO `shipment` (`order_id`) VALUES ({orderid})")#"SELECT * FROM `transport`
+        mysql.connection.commit()
+    cur.close()
+
 
 # Adds a new production plan from post with json
 @app.route('/productionplanner', methods=['POST'])

@@ -45,7 +45,7 @@ Run main.py in normal "mode" not debugging mode.
 For public endpoint with all models use this uri: *127.0.0.1:5000/public*  
 For public endpoint with model search parameter use this uri: *127.0.0.1:5000/public?modelname=*  
 
-## Customer endpoint
+## Customer rep endpoint
 For customerrep endpoint GET method with all models use this uri: *127.0.0.1:5000/customerrep/orders*  
 For customerrep endpoint GET method with search parameter use this uri: *127.0.0.1:5000/customerrep/orders?state=*  
 For customerrep endpoint POST method with with parameters orderid and state this uri: *127.0.0.1:5000/customerrep/order?orderid=**NUMBERHERE**?state=**STATEHERE***  
@@ -57,6 +57,7 @@ For customerrep endpoint POST method with json object use this uri: *127.0.0.1:5
     "state": "open"
 }
 ```
+If state is set to "fulfilled" a transport request will be created.  
 
 ## Storekeeper endpoint
 For the storekeeper endpoint GET method with retrieving all orders with "skis available" state use this uri: *127.0.0.1:5000/storekeeper/orders*  
