@@ -1,3 +1,4 @@
+from ast import IsNot
 from flask import Flask, request, jsonify
 from flask_mysqldb import MySQL
 
@@ -33,27 +34,29 @@ def get_skis():
     return "Sum ting went wong", 500
 
 # Get orders from status as customer rep
-@app.route('/customerrep', methods=['GET'])
+@app.route('/customerrep/orders', methods=['GET'])
 def get_order_from_state():
     if request.method == 'GET':
         cur = mysql.connection.cursor()
         state = request.args.get('state')
         if state:
-            order = cur.execute("SELECT * FROM `order` WHERE state = '" + state + "'")
+            order = cur.execute("SELECT * FROM `order` WHERE order_status = '" + state + "'")
         else: 
             cur.close()
             return "Bad request", 404
-        if state > 0:
+        if state != "":
             order = cur.fetchall()
         cur.close()
         return jsonify(order), 200
     return "Error in db", 500
 
 # Set order status as customer rep for spesific orderid
-@app.route('/customerrep', methods=['POST'])
-def get_order_from_state():
+@app.route('/customerrep/order', methods=['POST'])
+def post_order_state():
     legal = 0
     legalStates = []
+    legalStates.append("open")
+    legalStates.append("closed")
     legalStates.append("being picked")
     legalStates.append("in transit")
     legalStates.append("waiting for pickup")
@@ -62,25 +65,35 @@ def get_order_from_state():
     
     if request.method == 'POST':
         cur = mysql.connection.cursor()
-        orderid, state = request.args.get('orderid', 'state')
+        content = request.get_json(silent=True)
+        orderid = None
+        state = None
+        if content:
+            orderid = content['orderid']
+            state = content['state']
+
+        if orderid is None or state is None:
+            orderid, state = request.args.get('orderid', 'state')
+        
         if state and orderid:
             for val in legalStates:
                 if state == val: 
                     legal = 1
             if legal == 1:
-                order = cur.execute("SELECT * FROM `order` WHERE orderid = " + orderid)
-                if order > 0:
+                order = cur.execute("SELECT * FROM `order` WHERE id = " + orderid)
+                if order < 0:
                     order.fetchall()
-                    change_order_state = cur.execute("UPDATE `order` SET `status`="+ state)
+                    change_order_state = cur.execute("UPDATE `order` SET `order_status`="+ state)
                     mysql.connection.commit()
-                cur.close()
-                order = cur.execute("SELECT * FROM `order` WHERE orderid = " + orderid)
-                if order > 0:
+                #cur.close()
+                order = cur.execute("SELECT * FROM `order` WHERE id = " + orderid)
+                if order < 0:
                     order.fetchall() 
                 return jsonify(order), 201
             else:
                 cur.close()
                 return "Bad request", 404   
+        return "Bad request", 404
     return "Error in db", 500
             
 
