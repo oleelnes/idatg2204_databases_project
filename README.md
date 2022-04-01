@@ -39,11 +39,20 @@ Create a virtual python enviorment; See Assignment_3 in blackboard for setup ins
 See reqirements.txt and install the required modules.  
 Start mysql server, if using xammpp click start all.  
 Import the **idatg2204_2022_group12.sql** file located in the folder *sql_database* into phpmyadmin and name it **idatg2204_2022_group12.sql**.  
-Run main.py as normal not debugging mode   
+Run main.py in normal "mode" not debugging mode. 
+
+## Public endpoint
 For public endpoint with all models use this uri: *127.0.0.1:5000/public*  
 For public endpoint with model search parameter use this uri: *127.0.0.1:5000/public?modelname=*  
+
+## Customer endpoint
 For customerrep endpoint GET method with all models use this uri: *127.0.0.1:5000/customerrep/orders*  
 For customerrep endpoint GET method with search parameter use this uri: *127.0.0.1:5000/customerrep/orders?state=*  
-For customerrep endpoint POST method with all models use this uri *127.0.0.1:5000/customerrep/order*  
-For customerrep endpoint POST method with search parameter use this uri: *127.0.0.1:5000/customerrep/order?orderid=?state=*  
-
+For customerrep endpoint POST method with with parameters orderid and state this uri: *127.0.0.1:5000/customerrep/order?orderid=?state=*  
+For customerrep endpoint POST method with json object use this uri: *127.0.0.1:5000/customerrep/order
+ ```json
+ example json object for customerrep/order: {
+    "orderid": "01",
+    "state": "open"
+}
+```
