@@ -48,11 +48,11 @@ For public endpoint with model search parameter use this uri: *127.0.0.1:5000/pu
 ## Customer endpoint
 For customerrep endpoint GET method with all models use this uri: *127.0.0.1:5000/customerrep/orders*  
 For customerrep endpoint GET method with search parameter use this uri: *127.0.0.1:5000/customerrep/orders?state=*  
-For customerrep endpoint POST method with with parameters orderid and state this uri: *127.0.0.1:5000/customerrep/order?orderid=?state=*  
+For customerrep endpoint POST method with with parameters orderid and state this uri: *127.0.0.1:5000/customerrep/order?orderid=**NUMBERHERE**?state=**STATEHERE***  
 For customerrep endpoint POST method with json object use this uri: *127.0.0.1:5000/customerrep/order
  ```json
  example json object for customerrep/order: {
-    "orderid": "01",
+    "orderid": "1",
     "state": "open"
 }
 ```
