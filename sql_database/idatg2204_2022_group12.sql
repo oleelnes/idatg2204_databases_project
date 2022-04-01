@@ -80,7 +80,7 @@ INSERT INTO `driver` (`id`, `transport_id`, `first_name`, `last_name`) VALUES
 
 CREATE TABLE `employee` (
   `id` int(11) NOT NULL,
-  `manafacturer_id` int(11) NOT NULL,
+  `manufacturer_id` int(11) NOT NULL,
   `first_name` varchar(100) COLLATE utf8mb4_danish_ci DEFAULT NULL,
   `last_name` varchar(100) COLLATE utf8mb4_danish_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_danish_ci;
@@ -137,7 +137,8 @@ CREATE TABLE `order` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_danish_ci;
 
 INSERT INTO `order` (`id`, `product_id`, `customer_id`, `ski_type`, `quantity`, `total_price`, `order_status`) VALUES 
-('100000', '000001', '300000', 'skate', '50', '6150', 'new');
+('100000', '000001', '300000', 'skate', '50', '6150', 'new'), 
+('100001', '000002', '300000', 'skate', '2', '200', 'skis available');
 
 -- --------------------------------------------------------
 
