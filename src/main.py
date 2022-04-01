@@ -54,7 +54,9 @@ def get_order_from_state():
 def post_order_state():
     legal = 0
     legalStates = []
+    legalStates.append("new")
     legalStates.append("open")
+    legalStates.append("skis available")
     legalStates.append("closed")
     legalStates.append("being picked")
     legalStates.append("in transit")
@@ -95,7 +97,40 @@ def post_order_state():
         return "Bad request", 404
     return "Error in db", 500
             
+def create_transport_request():
+    cur = mysql.connection.cursor()
+    transport = cur.execute("INSERT INTO ")
 
+# Adds a new production plan from post with json
+@app.route('/productionplanner', methods=['POST'])
+def post_production_plan():
+    cur = mysql.connection.cursor()
+    content = request.get_json()
+    month = content['month']
+    productid = content['productid']
+    day = content['day']
+    type = content['type']
+    productionAmount = content['productionAmount']
+
+    week = 4 * month
+    weeks = range(4)
+    for i in weeks:
+        plan = cur.execute("INSERT INTO `production_plan` (`week_number`, `manafacturer_id`) VALUES ('" + (week) + "', '200000')")
+        mysql.connection.commit()
+        typeData = cur.execute("INSERT INTO `production_type` \
+            (`production_week_number`, `product_id`, `day`, `type`, `production_amount`) \
+            VALUES ('%s', '%s', '%s', '%s', '%s')", week, productid, day, type, productionAmount)
+        mysql.connection.commit()
+        week += 1
+    prodplan = cur.execute("SELECT * FROM `production_type` WHERE production_week_number BETWEEN %s AND %s")
+    if prodplan < 0:
+        prodplan.fetchall() 
+        cur.close()
+        return jsonify(prodplan), 201
+    else:
+        cur.close()
+        return "Bad request", 404   
+    return "Error in db", 500 #todo
 
 
 if __name__ == '__main__':
