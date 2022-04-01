@@ -6,9 +6,9 @@ Group project IDATG2204
 - Andreas Blakli
     - email: andrbl@stud.ntnu.no
 - Anders Brunsberg Mariendal
-    - email: 
+    - email: anderbm@stud.ntnu.no
 - Ole Kristion Elnæs
-    - email: 
+    - email: olekel@stud.ntnu.no
 
 # Milestone 1
 ## Conceptual and logical models
