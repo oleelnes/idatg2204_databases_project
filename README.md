@@ -51,8 +51,34 @@ For customerrep endpoint GET method with search parameter use this uri: *127.0.0
 For customerrep endpoint POST method with with parameters orderid and state this uri: *127.0.0.1:5000/customerrep/order?orderid=**NUMBERHERE**?state=**STATEHERE***  
 For customerrep endpoint POST method with json object use this uri: *127.0.0.1:5000/customerrep/order
  ```json
- example json object for customerrep/order: {
+ example json object for customerrep/order: 
+ {
     "orderid": "1",
     "state": "open"
 }
+```
+## Productionplanner endpoint
+For the production planner endpoint use this uri: *127.0.0.1:5000/productionplanner*  
+```json
+ example json object for production/planner: 
+{
+    "month":"7",
+    "productid": "1",
+    "day": "1",
+    "type": "test",
+    "productionAmount": "12"
+}
+
+expected output:
+[
+    [
+        56,
+        29,
+        1,
+        1,
+        "test",
+        12
+    ],
+    etc...
+]
 ```
