@@ -57,8 +57,12 @@ For customerrep endpoint POST method with json object use this uri: *127.0.0.1:5
     "state": "open"
 }
 ```
+
+## Storekeeper endpoint
+For the storekeeper endpoint GET method with retrieving all orders with "skis available" state use this uri: *127.0.0.1:5000/storekeeper/orders*  
+
 ## Productionplanner endpoint
-For the production planner endpoint use this uri: *127.0.0.1:5000/productionplanner*  
+For the production planner endpoint use this uri with POST request: *127.0.0.1:5000/productionplanner*  
 ```json
  example json object for production/planner: 
 {
