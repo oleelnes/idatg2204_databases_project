@@ -1,4 +1,3 @@
-from crypt import methods
 from flask import Flask, request, jsonify
 from flask_mysqldb import MySQL
 
@@ -32,6 +31,24 @@ def get_skis():
         cur.close()
         return jsonify(skis), 200
     return "Sum ting went wong", 500
+
+@app.route('/customerrep', methods=['GET'])
+def get_order_from_state():
+    if request.method == 'GET':
+        cur = mysql.connection.cursor()
+        state = request.args.get('state')
+        if state:
+            order = cur.execute("SELECT * FROM `order` WHERE state = '" + state + "'")
+        else: 
+            cur.close()
+            return 404
+        if state > 0:
+            order = cur.fetchall()
+        cur.close()
+        return jsonify(order), 200
+    return "Error in db", 500
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
