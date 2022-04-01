@@ -34,6 +34,11 @@ CREATE TABLE `customer` (
   `end_date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_danish_ci;
 
+INSERT INTO `customer` (`id`, `start_date`, `end_date`) VALUES 
+('300000', '2020-09-09', '2025-10-10'), 
+('300001', '2021-02-09', '2025-10-10'), 
+('300002', '2010-03-09', '2025-10-10');
+
 -- --------------------------------------------------------
 
 --
@@ -45,6 +50,11 @@ CREATE TABLE `department` (
   `employee_id` int(11) NOT NULL,
   `responsibility` varchar(255) COLLATE utf8mb4_danish_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_danish_ci;
+
+INSERT INTO `department` (`name`, `employee_id`, `responsibility`) VALUES
+('production', '500000', 'production manager'),
+('production', '500001', 'production worker'),
+('administration', '500002', 'general manager');
 
 -- --------------------------------------------------------
 
@@ -59,6 +69,9 @@ CREATE TABLE `driver` (
   `last_name` varchar(100) COLLATE utf8mb4_danish_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_danish_ci;
 
+INSERT INTO `driver` (`id`, `transport_id`, `first_name`, `last_name`) VALUES
+('400000', '900000', 'asgeir', 'olavsen');
+
 -- --------------------------------------------------------
 
 --
@@ -71,6 +84,11 @@ CREATE TABLE `employee` (
   `first_name` varchar(100) COLLATE utf8mb4_danish_ci DEFAULT NULL,
   `last_name` varchar(100) COLLATE utf8mb4_danish_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_danish_ci;
+
+INSERT INTO `employee` (`id`, `manufacturer_id`, `first_name`, `last_name`) VALUES
+('500000', '200000', 'tore', 'torsen'), 
+('500001', '200000', 'peder', 'pedersen'),
+('500002', '200000', 'ingvild', 'arnesen');
 
 -- --------------------------------------------------------
 
@@ -85,6 +103,9 @@ CREATE TABLE `franchise` (
   `address` varchar(100) COLLATE utf8mb4_danish_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_danish_ci;
 
+INSERT INTO `franchise` (`name`, `customer_id`, `price_up`, `address`) VALUES
+('store ski', '300002', '20', 'storevegen 99');
+
 -- --------------------------------------------------------
 
 --
@@ -95,6 +116,9 @@ CREATE TABLE `manafacturer` (
   `id` int(11) NOT NULL,
   `name` varchar(100) COLLATE utf8mb4_danish_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_danish_ci;
+
+INSERT INTO `manufacturer` (`id`, `name`) VALUES
+('200000', 'gjovik skifabrikk');
 
 -- --------------------------------------------------------
 
@@ -112,6 +136,9 @@ CREATE TABLE `order` (
   `order_status` varchar(100) COLLATE utf8mb4_danish_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_danish_ci;
 
+INSERT INTO `order` (`id`, `product_id`, `customer_id`, `ski_type`, `quantity`, `total_price`, `order_status`) VALUES 
+('100000', '000001', '300000', 'skate', '50', '6150', 'new');
+
 -- --------------------------------------------------------
 
 --
@@ -122,6 +149,9 @@ CREATE TABLE `order_setting` (
   `independent` int(11) NOT NULL,
   `store_info_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_danish_ci;
+
+INSERT INTO `order_setting` (`independent`, `store_info_id`) VALUES 
+('0', '606060');
 
 -- --------------------------------------------------------
 
@@ -141,21 +171,21 @@ CREATE TABLE `product` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_danish_ci;
 
 INSERT INTO `product` (`id`, `model`, `type`, `size`, `description`, `in_production`, `MSRPP`, `url_photo`) VALUES
-('001', 'Race Pro', 'Skate', '142', 'Racing skies, minimum length', '1', '123', 'https://antonclub-res.cloudinary.com/image/upload/e_trim:0/c_fit,g_center,w_2048,h_2048/q_auto/bsg73pagn3vbkpe9wweu.jpg'),
-('002', 'Race Pro', 'Skate', '147', 'Racing skies, short length', '1', '123', 'https://antonclub-res.cloudinary.com/image/upload/e_trim:0/c_fit,g_center,w_2048,h_2048/q_auto/bsg73pagn3vbkpe9wweu.jpg'), 
-('003', 'Race Pro', 'Skate', '152', 'Racing skies, short length', '1', '123', 'https://antonclub-res.cloudinary.com/image/upload/e_trim:0/c_fit,g_center,w_2048,h_2048/q_auto/bsg73pagn3vbkpe9wweu.jpg'),
-('004', 'Race Pro', 'Skate', '157', 'Racing skies, short length', '1', '123', 'https://antonclub-res.cloudinary.com/image/upload/e_trim:0/c_fit,g_center,w_2048,h_2048/q_auto/bsg73pagn3vbkpe9wweu.jpg'),
-('005', 'Race Pro', 'Skate', '162', 'Racing skies, short length', '1', '123', 'https://antonclub-res.cloudinary.com/image/upload/e_trim:0/c_fit,g_center,w_2048,h_2048/q_auto/bsg73pagn3vbkpe9wweu.jpg'),
-('006', 'Race Pro', 'Skate', '167', 'Racing skies, medium length', '1', '130', 'https://antonclub-res.cloudinary.com/image/upload/e_trim:0/c_fit,g_center,w_2048,h_2048/q_auto/bsg73pagn3vbkpe9wweu.jpg'),
-('007', 'Race Pro', 'Skate', '172', 'Racing skies, medium length', '1', '130', 'https://antonclub-res.cloudinary.com/image/upload/e_trim:0/c_fit,g_center,w_2048,h_2048/q_auto/bsg73pagn3vbkpe9wweu.jpg'),
-('008', 'Race Pro', 'Skate', '177', 'Racing skies, medium length', '1', '130', 'https://antonclub-res.cloudinary.com/image/upload/e_trim:0/c_fit,g_center,w_2048,h_2048/q_auto/bsg73pagn3vbkpe9wweu.jpg'),
-('009', 'Race Pro', 'Skate', '182', 'Racing skies, medium length', '1', '130', 'https://antonclub-res.cloudinary.com/image/upload/e_trim:0/c_fit,g_center,w_2048,h_2048/q_auto/bsg73pagn3vbkpe9wweu.jpg'),
-('010', 'Race Pro', 'Skate', '187', 'Racing skies, medium length', '1', '130', 'https://antonclub-res.cloudinary.com/image/upload/e_trim:0/c_fit,g_center,w_2048,h_2048/q_auto/bsg73pagn3vbkpe9wweu.jpg'),
-('011', 'Race Pro', 'Skate', '192', 'Racing skies, long length', '1', '140', 'https://antonclub-res.cloudinary.com/image/upload/e_trim:0/c_fit,g_center,w_2048,h_2048/q_auto/bsg73pagn3vbkpe9wweu.jpg'),
-('012', 'Race Pro', 'Skate', '197', 'Racing skies, long length', '1', '140', 'https://antonclub-res.cloudinary.com/image/upload/e_trim:0/c_fit,g_center,w_2048,h_2048/q_auto/bsg73pagn3vbkpe9wweu.jpg'),
-('013', 'Race Pro', 'Skate', '202', 'Racing skies, long length', '1', '140', 'https://antonclub-res.cloudinary.com/image/upload/e_trim:0/c_fit,g_center,w_2048,h_2048/q_auto/bsg73pagn3vbkpe9wweu.jpg'),
-('014', 'Race Pro', 'Skate', '207', 'Racing skies, maximum length', '1', '140', 'https://antonclub-res.cloudinary.com/image/upload/e_trim:0/c_fit,g_center,w_2048,h_2048/q_auto/bsg73pagn3vbkpe9wweu.jpg'),
-('015', 'Race Speed', 'Skate', '142', 'Racing skies for speed, minimum length', '1', '144', 'https://antonclub-res.cloudinary.com/image/upload/e_trim:0/c_fit,g_center,w_2048,h_2048/q_auto/bsg73pagn3vbkpe9wweu.jpg');
+('000001', 'race pro', 'skate', '142', 'racing skies, minimum length', '1', '123', 'https://antonclub-res.cloudinary.com/image/upload/e_trim:0/c_fit,g_center,w_2048,h_2048/q_auto/bsg73pagn3vbkpe9wweu.jpg'),
+('000002', 'race pro', 'skate', '147', 'racing skies, short length', '1', '123', 'https://antonclub-res.cloudinary.com/image/upload/e_trim:0/c_fit,g_center,w_2048,h_2048/q_auto/bsg73pagn3vbkpe9wweu.jpg'), 
+('000003', 'race pro', 'skate', '152', 'racing skies, short length', '1', '123', 'https://antonclub-res.cloudinary.com/image/upload/e_trim:0/c_fit,g_center,w_2048,h_2048/q_auto/bsg73pagn3vbkpe9wweu.jpg'),
+('000004', 'race pro', 'skate', '157', 'racing skies, short length', '1', '123', 'https://antonclub-res.cloudinary.com/image/upload/e_trim:0/c_fit,g_center,w_2048,h_2048/q_auto/bsg73pagn3vbkpe9wweu.jpg'),
+('000005', 'race pro', 'skate', '162', 'racing skies, short length', '1', '123', 'https://antonclub-res.cloudinary.com/image/upload/e_trim:0/c_fit,g_center,w_2048,h_2048/q_auto/bsg73pagn3vbkpe9wweu.jpg'),
+('000006', 'race pro', 'skate', '167', 'racing skies, medium length', '1', '130', 'https://antonclub-res.cloudinary.com/image/upload/e_trim:0/c_fit,g_center,w_2048,h_2048/q_auto/bsg73pagn3vbkpe9wweu.jpg'),
+('000007', 'race pro', 'skate', '172', 'racing skies, medium length', '1', '130', 'https://antonclub-res.cloudinary.com/image/upload/e_trim:0/c_fit,g_center,w_2048,h_2048/q_auto/bsg73pagn3vbkpe9wweu.jpg'),
+('000008', 'race pro', 'skate', '177', 'racing skies, medium length', '1', '130', 'https://antonclub-res.cloudinary.com/image/upload/e_trim:0/c_fit,g_center,w_2048,h_2048/q_auto/bsg73pagn3vbkpe9wweu.jpg'),
+('000009', 'race pro', 'skate', '182', 'racing skies, medium length', '1', '130', 'https://antonclub-res.cloudinary.com/image/upload/e_trim:0/c_fit,g_center,w_2048,h_2048/q_auto/bsg73pagn3vbkpe9wweu.jpg'),
+('000010', 'race pro', 'skate', '187', 'racing skies, medium length', '1', '130', 'https://antonclub-res.cloudinary.com/image/upload/e_trim:0/c_fit,g_center,w_2048,h_2048/q_auto/bsg73pagn3vbkpe9wweu.jpg'),
+('000011', 'race pro', 'skate', '192', 'racing skies, long length', '1', '140', 'https://antonclub-res.cloudinary.com/image/upload/e_trim:0/c_fit,g_center,w_2048,h_2048/q_auto/bsg73pagn3vbkpe9wweu.jpg'),
+('000012', 'race pro', 'skate', '197', 'racing skies, long length', '1', '140', 'https://antonclub-res.cloudinary.com/image/upload/e_trim:0/c_fit,g_center,w_2048,h_2048/q_auto/bsg73pagn3vbkpe9wweu.jpg'),
+('000013', 'race pro', 'skate', '202', 'racing skies, long length', '1', '140', 'https://antonclub-res.cloudinary.com/image/upload/e_trim:0/c_fit,g_center,w_2048,h_2048/q_auto/bsg73pagn3vbkpe9wweu.jpg'),
+('000014', 'race pro', 'skate', '207', 'racing skies, maximum length', '1', '140', 'https://antonclub-res.cloudinary.com/image/upload/e_trim:0/c_fit,g_center,w_2048,h_2048/q_auto/bsg73pagn3vbkpe9wweu.jpg'),
+('000015', 'race speed', 'skate', '142', 'racing skies for speed, minimum length', '1', '144', 'https://antonclub-res.cloudinary.com/image/upload/e_trim:0/c_fit,g_center,w_2048,h_2048/q_auto/bsg73pagn3vbkpe9wweu.jpg');
 
 -- --------------------------------------------------------
 
@@ -167,6 +197,10 @@ CREATE TABLE `production_plan` (
   `week_number` int(11) NOT NULL,
   `manafacturer_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_danish_ci;
+
+INSERT INTO `production_plan` (`week_number`, `manufacturer_id`) VALUES 
+('1', '202020'), 
+('2', '202021');
 
 -- --------------------------------------------------------
 
@@ -183,6 +217,9 @@ CREATE TABLE `production_type` (
   `production_amount` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_danish_ci;
 
+INSERT INTO `production_type` (`id`, `production_week_number`, `product_id`, `day`, `type`, `production_amount`) VALUES
+('809090', '1', '001', '4', 'Skate', '100');
+
 -- --------------------------------------------------------
 
 --
@@ -194,6 +231,8 @@ CREATE TABLE `receive_shipment` (
   `store_info_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_danish_ci;
 
+INSERT INTO `receive_shipment` (`directly`, `store_info_id`) VALUES
+('1', '606060');
 -- --------------------------------------------------------
 
 --
@@ -211,6 +250,9 @@ CREATE TABLE `shipment` (
   `driver_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_danish_ci;
 
+INSERT INTO `shipment` (`id`, `order_id`, `store_franchise_name`, `address`, `scheduled_pickup_date`, `state`, `transport_name`, `driver_id`) VALUES
+('7080800', '100000', 'best ski stores', 'heidalsvegen 3', '2022-04-20', 'in transit', 'heidis transport AS', '400000');
+
 -- --------------------------------------------------------
 
 --
@@ -224,6 +266,9 @@ CREATE TABLE `store` (
   `price_up` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_danish_ci;
 
+INSERT INTO `store` (`name`, `customer_id`, `address`, `price_up`) VALUES
+('ski store 1', '300000', 'heidalsvegen 3', '30');
+
 -- --------------------------------------------------------
 
 --
@@ -234,6 +279,9 @@ CREATE TABLE `store_info` (
   `id` int(11) NOT NULL,
   `customer_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_danish_ci;
+
+INSERT INTO `store_info` (`id`, `customer_id`) VALUES
+('606060', '300000');
 
 -- --------------------------------------------------------
 
@@ -250,6 +298,9 @@ CREATE TABLE `team_skier` (
   `number_of_skis` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_danish_ci;
 
+INSERT INTO `team_skier` (`first_name`, `last_name`, `customer_id`, `date_of_birth`, `club`, `number_of_skis`) VALUES
+('arnulf', 'tangen', '300001', '1999-12-20', 'oslo ski club', '20');
+
 -- --------------------------------------------------------
 
 --
@@ -261,6 +312,9 @@ CREATE TABLE `transport` (
   `shipment_id` int(11) NOT NULL,
   `name` varchar(100) COLLATE utf8mb4_danish_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_danish_ci;
+
+INSERT INTO `transport` (`id`, `shipment_id`, `name`) VALUES
+('900000', '700000', 'example name');
 
 --
 -- Indexes for dumped tables

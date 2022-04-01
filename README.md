@@ -18,7 +18,11 @@ For logical model see the folder *documentation/models/logical_model*.
 
 # Milestone 2
 For SQL database see the file **idatg2204_2022_group12.sql** in the folder *sql_database*.  
-For public endpoint functionality see the file **main.py** in the folder *src*.  
+For public endpoint functionality see the file **main.py** in the folder *src*. 
+
+# Milestone 3
+For SQL database see the file **idatg2204_2022_group12.sql** in the folder *sql_database*.
+For Customer rep endpoint functionality see the file **main.py** in the folder *src*.
 
 ## Note:
 See the issue tracker for spesific details regarding work and priorities and Milestones under the Issues sidebar.  
@@ -27,7 +31,7 @@ https://git.gvk.idi.ntnu.no/course/idatg2204/idatg2204-2022-workspace/andrbl/ida
 # Versions
 - v0.1 - Milestone 1
 - v0.2 - Milestone 2
-- v0.3 - TBD
+- v0.3 - Milestone 3
 
 # How to run
 git clone this repo.  
@@ -38,3 +42,8 @@ Import the **idatg2204_2022_group12.sql** file located in the folder *sql_databa
 Run main.py  
 For public endpoint with all models use this uri: *127.0.0.1:5000/public*  
 For public endpoint with model search parameter use this uri: *127.0.0.1:5000/public?modelname=*  
+For customerrep endpoint GET method with all models use this uri: *127.0.0.1:5000/customerrep/orders*
+For customerrep endpoint GET method with search parameter use this uri: *127.0.0.1:5000/customerrep/orders?state=*
+For customerrep endpoint POST method with all models use this uri *127.0.0.1:5000/customerrep/order*
+For customerrep endpoint POST method with search parameter use this uri: *127.0.0.1:5000/customerrep/order?orderid=?state=*
+
