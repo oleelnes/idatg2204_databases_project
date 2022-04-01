@@ -32,6 +32,22 @@ def get_skis():
         return jsonify(skis), 200
     return "Sum ting went wong", 500
 
+# Retrieve orders in the "skis available" state
+@app.route('/storekeeper/orders', methods=['GET'])
+def get_skis_available_orders():
+    if request.method == 'GET':
+        cur = mysql.connection.cursor()
+        order = cur.execute("SELECT * FROM `order` WHERE order_status = 'skis available'")
+        if order:
+            order = cur.fetchall()
+            cur.close()
+            return jsonify(order), 200
+        else:
+            cur.close()
+            return "Bad request", 400
+        #something
+    return "Error in db", 500
+
 # Get orders from status as customer rep
 @app.route('/customerrep/orders', methods=['GET'])
 def get_order_from_state():
@@ -48,6 +64,8 @@ def get_order_from_state():
         cur.close()
         return jsonify(order), 200
     return "Error in db", 500
+
+
 
 # Set order status as customer rep for spesific orderid
 @app.route('/customerrep/order', methods=['POST'])
