@@ -27,7 +27,7 @@ def get_skis():
         if modelname:
             skis = cur.execute("SELECT model, type, size, description, MSRPP ,url_photo \
             FROM `product` \
-            WHERE model = '" + modelname + "'")
+            WHERE model = %s", (modelname))
         else:        
             skis = cur.execute("SELECT model, type, size, description, MSRPP ,url_photo FROM `product`")
         if skis > 0:
@@ -59,7 +59,7 @@ def get_order_from_state():
         cur = mysql.connection.cursor()
         state = request.args.get('state')
         if state:
-            order = cur.execute("SELECT * FROM `order` WHERE order_status = '" + state + "'")
+            order = cur.execute("SELECT * FROM `order` WHERE order_status = %s", state)
         else: 
             cur.close()
             return "Bad request", 404
@@ -104,14 +104,14 @@ def post_order_state():
                 if state == val: 
                     legal = 1
             if legal == 1:
-                order = cur.execute("SELECT * FROM `order` WHERE id = " + orderid)
+                order = cur.execute("SELECT * FROM `order` WHERE id = %s", (orderid))
                 if order > 0:
                     order = cur.fetchall()
-                    change_order_state = cur.execute(f"UPDATE `order` SET `order_status`='{state}'")
+                    change_order_state = cur.execute("UPDATE `order` SET `order_status`=%s", (state))
                     mysql.connection.commit()
                     if state == "fulfilled":
                         create_transport_request(orderid)
-                order = cur.execute("SELECT * FROM `order` WHERE id = " + orderid)
+                order = cur.execute("SELECT * FROM `order` WHERE id = %s", (orderid))
                 if order > 0:
                     order = cur.fetchall() 
                 return jsonify(order), 201
@@ -124,9 +124,9 @@ def post_order_state():
 # Creates a new transport request from the given orderID input parameter            
 def create_transport_request(orderid):
     cur = mysql.connection.cursor()
-    order = cur.execute(f"SELECT id FROM `order` WHERE id = {orderid} AND order_status = 'fulfilled'")
+    order = cur.execute("SELECT id FROM `order` WHERE id = %s AND order_status = 'fulfilled'", (orderid))
     if order > 0:
-        transport = cur.execute(f"INSERT INTO `shipment` (`order_id`) VALUES ({orderid})")#"SELECT * FROM `transport`
+        transport = cur.execute("INSERT INTO `shipment` (`order_id`) VALUES (%s)", (orderid))#"SELECT * FROM `transport`
         mysql.connection.commit()
     cur.close()
 
@@ -146,15 +146,15 @@ def post_production_plan():
         week = 4 * int(month)
         weeks = range(4)
         for i in weeks:
-            plan = cur.execute(f"INSERT INTO `production_plan` (`week_number`, `manafacturer_id`) VALUES ('{week}', '200000')")
+            plan = cur.execute("INSERT INTO `production_plan` (`week_number`, `manafacturer_id`) VALUES (%s, '200000')", (week))
             mysql.connection.commit()
-            typeData = cur.execute(f"INSERT INTO `production_type` \
+            typeData = cur.execute("INSERT INTO `production_type` \
                 (`production_week_number`, `product_id`, `day`, `type`, `production_amount`) \
-                VALUES ('{week}', '{productid}', '{day}', '{type}', '{productionAmount}')")
+                VALUES (%s, %s, %s, %s, %s)", (week, productid, day, type, productionAmount))
             mysql.connection.commit()
             week += 1
 
-        prodplan = cur.execute(f"SELECT * FROM `production_type` WHERE production_week_number BETWEEN {week - 3} AND {week}")
+        prodplan = cur.execute("SELECT * FROM `production_type` WHERE production_week_number BETWEEN %s AND %s", (week - 3, week))
         if prodplan > 0:
             prodplan = cur.fetchall()
             cur.close()
