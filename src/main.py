@@ -83,7 +83,7 @@ def post_order_state():
     legalStates.append("completed")
     legalStates.append("fulfilled")
     
-    if request.method == 'POST':
+    if request.method == 'PATCH':
         cur = mysql.connection.cursor()
         content = request.get_json(silent=True)
         orderid = None
