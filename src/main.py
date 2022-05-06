@@ -1,5 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_mysqldb import MySQL
+from hashlib import pbkdf2_hmac
+import random
 
 app = Flask(__name__)
 
@@ -9,6 +11,8 @@ app.config['MYSQL_PASSWORD']=""
 app.config['MYSQL_DB']="idatg2204_2022_group12"
 
 mysql = MySQL(app)
+
+ALPHABET_AND_NUMBERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
 
 @app.route('/')
 def index():
@@ -159,6 +163,17 @@ def post_production_plan():
         cur.close()
         return "Bad request", 404   
     return "Error in db", 500 #todo
+
+# Function that returns a randomly generated salt for authentication purposes.
+def createSalt():
+    salt=[]
+    for i in range(12):
+        salt.append(random.choice(ALPHABET_AND_NUMBERS))
+    return "".join(salt)
+
+# Function that returns a hashed password with sha256 and salt.
+def createHashedPassword(password, salt):
+    return pbkdf2_hmac('sha256', str.encode(password), str.encode(salt), 200000)
 
 
 
