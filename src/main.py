@@ -68,7 +68,7 @@ def get_order_from_state():
 
 
 # Set order status as customer rep for spesific orderid
-@app.route('/customerrep/order', methods=['POST'])
+@app.route('/customerrep/order', methods=['PATCH'])
 def post_order_state():
     legal = 0
     legalStates = []
@@ -83,7 +83,7 @@ def post_order_state():
     legalStates.append("completed")
     legalStates.append("fulfilled")
     
-    if request.method == 'PATCH':
+    if request.method == 'PATCH': 
         cur = mysql.connection.cursor()
         content = request.get_json(silent=True)
         orderid = None
