@@ -39,7 +39,7 @@ INSERT INTO `authentication` (`role`, `username`, `password_hashed`, `salt`) VAL
 ('customer rep', 'customer_rep_user', 'todo', 'todo'),
 ('storekeeper', 'storekeeper_user', 'todo', 'todo');
 
------------------------------------------------------------
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `customer`
@@ -126,7 +126,7 @@ INSERT INTO `franchise` (`name`, `customer_id`, `price_up`, `address`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `manafacturer`
+-- Table structure for table `manufacturer`
 --
 
 CREATE TABLE `manufacturer` (
@@ -214,7 +214,7 @@ INSERT INTO `product` (`id`, `model`, `type`, `size`, `description`, `in_product
 
 CREATE TABLE `production_plan` (
   `week_number` int(11) NOT NULL,
-  `manafacturer_id` int(11) NOT NULL
+  `manufacturer_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_danish_ci;
 
 INSERT INTO `production_plan` (`week_number`, `manufacturer_id`) VALUES 
@@ -363,8 +363,8 @@ ALTER TABLE `driver`
 -- Indexes for table `employee`
 --
 ALTER TABLE `employee`
-  ADD PRIMARY KEY (`id`,`manafacturer_id`),
-  ADD KEY `fk_manafacturer_id_employee` (`manafacturer_id`);
+  ADD PRIMARY KEY (`id`,`manufacturer_id`),
+  ADD KEY `fk_manufacturer_id_employee` (`manufacturer_id`);
 
 --
 -- Indexes for table `franchise`
@@ -374,9 +374,9 @@ ALTER TABLE `franchise`
   ADD KEY `fk_customer_id` (`customer_id`);
 
 --
--- Indexes for table `manafacturer`
+-- Indexes for table `manufacturer`
 --
-ALTER TABLE `manafacturer`
+ALTER TABLE `manufacturer`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -404,8 +404,8 @@ ALTER TABLE `product`
 -- Indexes for table `production_plan`
 --
 ALTER TABLE `production_plan`
-  ADD PRIMARY KEY (`week_number`,`manafacturer_id`),
-  ADD KEY `fk_manafacturer_id_production_plans` (`manafacturer_id`);
+  ADD PRIMARY KEY (`week_number`,`manufacturer_id`),
+  ADD KEY `fk_manufacturer_id_production_plans` (`manufacturer_id`);
 
 --
 -- Indexes for table `production_type`
@@ -480,9 +480,9 @@ ALTER TABLE `employee`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `manafacturer`
+-- AUTO_INCREMENT for table `manufacturer`
 --
-ALTER TABLE `manafacturer`
+ALTER TABLE `manufacturer`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
@@ -553,7 +553,7 @@ ALTER TABLE `driver`
 -- Constraints for table `employee`
 --
 ALTER TABLE `employee`
-  ADD CONSTRAINT `fk_manafacturer_id_employee` FOREIGN KEY (`manafacturer_id`) REFERENCES `manafacturer` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_manufacturer_id_employee` FOREIGN KEY (`manufacturer_id`) REFERENCES `manufacturer` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `franchise`
@@ -578,7 +578,7 @@ ALTER TABLE `order_setting`
 -- Constraints for table `production_plan`
 --
 ALTER TABLE `production_plan`
-  ADD CONSTRAINT `fk_manafacturer_id_production_plans` FOREIGN KEY (`manafacturer_id`) REFERENCES `manafacturer` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_manufacturer_id_production_plans` FOREIGN KEY (`manufacturer_id`) REFERENCES `manufacturer` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `production_type`
