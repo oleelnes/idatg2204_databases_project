@@ -169,7 +169,26 @@ def post_production_plan():
 # Create new orders
 @app.route('/customer/orders', methods=['POST'])
 def place_order():
-    return "todo", 200
+    if request.method == 'POST':
+        cur = mysql.connection.cursor()
+        orderData = request.get_json()
+
+        id = orderData['id']
+        productId = orderData['product_id']
+        customerId = orderData['customer_id']
+        skiType = orderData['ski_type']
+        quantity = orderData['quantity']
+        totalPrice = orderData['total_price']
+        orderStatus = orderData['order_status']
+
+        order = cur.execute("INSERT INTO `order` (`id`, `product_id`, `customer_id`, `ski_type`, `quantity`, `total_price`, `order_status`)" 
+        "VALUES (%s, %s, %s, %s, %s, %s, %s)", (id, productId, customerId, skiType, quantity, totalPrice, orderStatus))
+        mysql.connection.commit()
+        cur.close()
+        return jsonify(order), 200
+    else: 
+        return "Wrong method. Only POST is supported.", 405
+
 
 # Create new orders
 @app.route('/customer/orders', methods=['GET'])
