@@ -13,6 +13,7 @@ app.config['MYSQL_DB']="idatg2204_2022_group12"
 mysql = MySQL(app)
 
 ALPHABET_AND_NUMBERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+role_user = ""
 
 @app.route('/')
 def index():
@@ -163,6 +164,40 @@ def post_production_plan():
         cur.close()
         return "Bad request", 404   
     return "Error in db", 500 #todo
+
+# Login endpoint
+@app.route('/login', methods=['POST'])
+def login():
+    cur = mysql.connection.cursor()
+    if request.method == 'POST':
+        login_data = request.get_json()
+        username = login_data['username']
+        password = login_data['password']
+
+        resp = cur.execute("SELECT * FROM `authentication` WHERE `username`=%s", username)
+
+        # Checks if resp has any content and stores it as an array if it does. If not, an error is returned.
+        if resp > 0:
+            authentication_data = cur.fetchone()
+            cur.close()
+        else:
+            cur.close()
+            return "Username not found in database." (400)
+
+        # Fetching data from the database.
+        role_db = authentication_data[0]
+        password_db = authentication_data[2]
+        salt_db = authentication_data[3]
+
+        if createHashedPassword(password, salt_db).hex() == password_db:
+            # Sets the role_user variable which decides the level of authorization the user has.
+            role_user = role_db
+            return "Successfully logged into user " + username + ", role: " + role_user, (200)
+        else: 
+            return "Wrong password.", (400)
+    else:
+        cur.close()
+        return "Method not supported. Try again with POST method.", (501)
 
 # Function that returns a randomly generated salt for authentication purposes.
 def createSalt():
