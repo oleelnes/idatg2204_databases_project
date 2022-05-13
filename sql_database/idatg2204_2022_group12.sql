@@ -24,9 +24,26 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `customer`
+-- Table structure for table `authentication`
 --
 
+CREATE TABLE `authentication` (
+  `role` varchar(30) COLLATE utf8mb4_danish_ci DEFAULT NULL,
+  `username` varchar(30) COLLATE utf8mb4_danish_ci DEFAULT NULL,
+  `password_hashed` varchar(52) COLLATE utf8mb4_danish_ci DEFAULT NULL,
+  `salt` varchar(12) COLLATE utf8mb4_danish_ci DEFAULT NULL 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_danish_ci;
+
+INSERT INTO `authentication` (`role`, `username`, `password_hashed`, `salt`) VALUES
+('customer', 'customer_user', 'fill_later', 'salt_fill_later'),
+('customer rep', 'customer_rep_user', 'fill_later', 'salt_fill_later'),
+('storekeeper', 'storekeeper_user', 'fill_later', 'salt_fill_later');
+
+-----------------------------------------------------------
+
+--
+-- Table structure for table `customer`
+--
 
 CREATE TABLE `customer` (
   `id` int(11) NOT NULL,
