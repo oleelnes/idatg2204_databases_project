@@ -80,13 +80,8 @@ def post_order_state():
     legalStates.append("new")
     legalStates.append("open")
     legalStates.append("skis available")
-    legalStates.append("closed")
-    legalStates.append("being picked")
-    legalStates.append("in transit")
-    legalStates.append("waiting for pickup")
-    legalStates.append("canceled")
-    legalStates.append("completed")
-    legalStates.append("fulfilled")
+    legalStates.append("ready to be shipped")
+  
     
     if request.method == 'PATCH': 
         cur = mysql.connection.cursor()
@@ -193,7 +188,11 @@ def place_order():
 # Create new orders
 @app.route('/customer/orders', methods=['GET'])
 def get_production_plan_summary():
-    return "todo", 200
+    if request.method == 'GET':
+        cur = mysql.connection.cursor()
+        cur.close()
+    else:
+        return "Wrong method. Only GET is supported.", 405
 
 # Delete a given order
 @app.route('/customer/orders', methods=['DELETE'])
