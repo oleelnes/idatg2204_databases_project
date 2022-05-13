@@ -3,9 +3,9 @@ from flask import Flask, request, jsonify
 from flask_mysqldb import MySQL
 from hashlib import pbkdf2_hmac
 import random
-import company.customer_rep as customer_rep
-import company.storekeeper as storekeeper
-import public.public as public
+import endpoints.company.customer_rep as customer_rep
+import endpoints.company.storekeeper as storekeeper
+import endpoints.public.public as public
 
 app = Flask(__name__)
 
