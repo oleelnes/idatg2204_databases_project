@@ -6,6 +6,7 @@ import random
 import endpoints.company.customer_rep as customer_rep
 import endpoints.company.storekeeper as storekeeper
 import endpoints.public.public as public
+import endpoints.customer.customer as customer
 
 app = Flask(__name__)
 
@@ -53,55 +54,13 @@ def post_production_plan():
 # Delete a given order
 @app.route('/customer/cancelorder', methods=['DELETE'])
 def delete_order():
-    if request.method == 'DELETE':
-        cur = mysql.connection.cursor()
-        id = request.args.get('id')
-
-        if id is None:
-            return "Id needs to be passed.", 400
-
-        delete = cur.execute("DELETE FROM `order` WHERE id=%s", (id,))
-
-        mysql.connection.commit()
-        cur.close()
-        return "successfully deleted order with id " + id, 200
-    else:
-        return "Wrong method. Only GET is supported.", 405
+    return customer.delete_order(mysql)
 
 
 # Create new orders
 @app.route('/customer/orders/new', methods=['POST'])
 def place_order():
-    if request.method == 'POST':
-        cur = mysql.connection.cursor()
-        orderData = request.get_json()
-
-        id = orderData['id']
-        productId = orderData['product_id']
-        customerId = orderData['customer_id']
-        skiType = orderData['ski_type']
-        quantity = orderData['quantity']
-        totalPrice = orderData['total_price']
-        orderStatus = orderData['order_status']
-        date = orderData['date']
-
-        if id is None or productId is None or customerId or skiType \
-        is None or quantity is None or totalPrice is None or orderStatus is None or date is None:
-            return "Something is wrong in the json body!", 400
-
-        #todo: create id automatically instead of having user decide it. 
-
-        order = cur.execute("INSERT INTO `order` (`id`, `product_id`, `customer_id`, `ski_type`, `quantity`, `total_price`, `order_status`, `date`) \
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", (id, productId, customerId, skiType, quantity, totalPrice, orderStatus, date))
-        mysql.connection.commit()
-
-        order_response = cur.execute("SELECT * FROM `order` WHERE id=%s", (id,))
-        order_response = cur.fetchall()
-
-        cur.close()
-        return jsonify(order_response), 200
-    else: 
-        return "Wrong method. Only POST is supported.", 405
+    return customer.place_order(mysql)
 
 # Retrieve a four week production plan summary
 @app.route('/customer/productionplan', methods=['GET'])
@@ -112,40 +71,15 @@ def get_production_plan_summary():
     else:
         return "Wrong method. Only GET is supported.", 405
 
-
-
 # Retrieve a specific order
 @app.route('/customer/orderbyid', methods=['GET'])
 def get_order_by_id():
-    if request.method == 'GET':
-        cur = mysql.connection.cursor()
-        id = request.args.get('order_id')
-        retrieved_order = cur.execute("SELECT * FROM `order` WHERE `id`=%s", (id,))
-        retrieved_order = cur.fetchall()
-        cur.close()
-        return jsonify(retrieved_order), 200
-    else:
-        return "Wrong method. Only GET is supported.", 405
+    return customer.get_order_by_id(mysql)
 
 # Retrieve orders with since filter
 @app.route('/customer/orderssince', methods=['GET'])
 def get_orders_since():
-    if request.method == 'GET':
-        cur = mysql.connection.cursor()
-
-        date = request.args.get('date')
-
-        if date is None:
-            return "Date must be entered as a key.", 400
-        
-        #"SELECT * FROM `order` BETWEEN %s AND CURDATE() ORDER BY date asc"
-        orders = cur.execute("SELECT * FROM `order` WHERE `date` BETWEEN %s AND CURDATE() ORDER BY date asc", (date,))
-        orders = cur.fetchall()
-        cur.close()
-
-        return jsonify(orders)
-    else:
-        return "Wrong method. Only GET is supported.", 405
+    return customer.get_orders_since(mysql)
 
 
 
