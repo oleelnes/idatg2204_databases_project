@@ -35,7 +35,7 @@ def get_skis():
             skis = cur.fetchall()
         cur.close()
         return jsonify(skis), 200
-    return "Sum ting went wong", 500
+    return "Error in db", 500
 
 # Retrieve orders in the "skis available" state
 @app.route('/storekeeper/orders', methods=['GET'])
@@ -164,6 +164,36 @@ def post_production_plan():
         cur.close()
         return "Bad request", 404   
     return "Error in db", 500 #todo
+
+
+# Create new orders
+@app.route('/customer/orders', methods=['POST'])
+def place_order():
+    return "todo", 200
+
+# Create new orders
+@app.route('/customer/orders', methods=['GET'])
+def get_production_plan_summary():
+    return "todo", 200
+
+# Delete a given order
+@app.route('/customer/orders', methods=['DELETE'])
+def delete_order():
+    return "todo", 200
+
+# Retrieve a specific order
+
+@app.route('/customer/orders', methods=['GET'])
+def get_order_by_id():
+    return "todo", 200
+
+# Retrieve orders with since filter
+@app.route('/customer/orders', methods=['GET'])
+def get_orders_since():
+    return "todo", 200
+
+
+
 
 # Login endpoint
 @app.route('/login', methods=['POST'])
