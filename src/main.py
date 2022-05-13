@@ -25,27 +25,27 @@ def index():
 
 @app.route('/public', methods=['GET'])
 def get_skis():
-    public.get_skis(mysql)
+    return public.get_skis(mysql)
 
 # Retrieve orders in the "skis available" state
 @app.route('/storekeeper/orders/skisavailable', methods=['GET'])
 def get_skis_available_orders():
-    storekeeper.get_skis_available_orders(mysql)
+    return storekeeper.get_skis_available_orders(mysql)
 
 # Get orders from status as customer rep
 @app.route('/customerrep/orders', methods=['GET'])
 def get_order_from_state():
-    customer_rep.get_order_from_state(mysql)
+    return customer_rep.get_order_from_state(mysql)
 
 # Set order status as customer rep for spesific orderid
 @app.route('/customerrep/order', methods=['PATCH'])
 def post_order_state():
-    customer_rep.post_order_state(mysql)
+    return customer_rep.post_order_state(mysql)
 
 # Adds a new production plan from post with json
 @app.route('/productionplanner', methods=['POST'])
 def post_production_plan():
-    storekeeper.post_production_plan(mysql)
+    return storekeeper.post_production_plan(mysql)
 
 # Retrieve four week production plan summary
 
@@ -136,7 +136,7 @@ def login():
             cur.close()
         else:
             cur.close()
-            return "Username not found in database." (400)
+            return "Username not found in database.", (400)
 
         # Fetching data from the database.
         role_db = authentication_data[0]
