@@ -29,7 +29,7 @@ def get_skis():
         if modelname:
             skis = cur.execute("SELECT model, type, size, description, MSRPP ,url_photo \
             FROM `product` \
-            WHERE model = %s", (modelname))
+            WHERE model = %s", (modelname,))
         else:        
             skis = cur.execute("SELECT model, type, size, description, MSRPP ,url_photo FROM `product`")
         if skis > 0:
@@ -39,7 +39,7 @@ def get_skis():
     return "Error in db", 500
 
 # Retrieve orders in the "skis available" state
-@app.route('/storekeeper/orders', methods=['GET'])
+@app.route('/storekeeper/orders/skisavailable', methods=['GET'])
 def get_skis_available_orders():
     if request.method == 'GET':
         cur = mysql.connection.cursor()
@@ -61,7 +61,7 @@ def get_order_from_state():
         cur = mysql.connection.cursor()
         state = request.args.get('state')
         if state:
-            order = cur.execute("SELECT * FROM `order` WHERE order_status = %s", state)
+            order = cur.execute("SELECT * FROM `order` WHERE order_status=%s", (state,))
         else: 
             cur.close()
             return "Bad request", 404
@@ -81,13 +81,8 @@ def post_order_state():
     legalStates.append("new")
     legalStates.append("open")
     legalStates.append("skis available")
-    legalStates.append("closed")
-    legalStates.append("being picked")
-    legalStates.append("in transit")
-    legalStates.append("waiting for pickup")
-    legalStates.append("canceled")
-    legalStates.append("completed")
-    legalStates.append("fulfilled")
+    legalStates.append("ready to be shipped")
+  
     
     if request.method == 'PATCH': 
         cur = mysql.connection.cursor()
@@ -106,14 +101,14 @@ def post_order_state():
                 if state == val: 
                     legal = 1
             if legal == 1:
-                order = cur.execute("SELECT * FROM `order` WHERE id = %s", (orderid))
+                order = cur.execute("SELECT * FROM `order` WHERE id = %s", (orderid,))
                 if order > 0:
                     order = cur.fetchall()
-                    change_order_state = cur.execute("UPDATE `order` SET `order_status`=%s", (state))
+                    change_order_state = cur.execute("UPDATE `order` SET `order_status`=%s", (state,))
                     mysql.connection.commit()
                     if state == "fulfilled":
                         create_transport_request(orderid)
-                order = cur.execute("SELECT * FROM `order` WHERE id = %s", (orderid))
+                order = cur.execute("SELECT * FROM `order` WHERE id = %s", (orderid,))
                 if order > 0:
                     order = cur.fetchall() 
                 return jsonify(order), 201
@@ -126,9 +121,9 @@ def post_order_state():
 # Creates a new transport request from the given orderID input parameter            
 def create_transport_request(orderid):
     cur = mysql.connection.cursor()
-    order = cur.execute("SELECT id FROM `order` WHERE id = %s AND order_status = 'fulfilled'", (orderid))
+    order = cur.execute("SELECT id FROM `order` WHERE id = %s AND order_status = 'fulfilled'", (orderid,))
     if order > 0:
-        transport = cur.execute("INSERT INTO `shipment` (`order_id`) VALUES (%s)", (orderid))#"SELECT * FROM `transport`
+        transport = cur.execute("INSERT INTO `shipment` (`order_id`) VALUES (%s)", (orderid,))#"SELECT * FROM `transport`
         mysql.connection.commit()
     cur.close()
 
@@ -148,15 +143,15 @@ def post_production_plan():
         week = 4 * int(month)
         weeks = range(4)
         for i in weeks:
-            plan = cur.execute("INSERT INTO `production_plan` (`week_number`, `manafacturer_id`) VALUES (%s, '200000')", (week))
+            plan = cur.execute("INSERT INTO `production_plan` (`week_number`, `manafacturer_id`) VALUES (%s, '200000')", (week,))
             mysql.connection.commit()
             typeData = cur.execute("INSERT INTO `production_type` \
                 (`production_week_number`, `product_id`, `day`, `type`, `production_amount`) \
-                VALUES (%s, %s, %s, %s, %s)", (week, productid, day, type, productionAmount))
+                VALUES (%s, %s, %s, %s, %s)", (week, productid, day, type, productionAmount,))
             mysql.connection.commit()
             week += 1
 
-        prodplan = cur.execute("SELECT * FROM `production_type` WHERE production_week_number BETWEEN %s AND %s", (week - 3, week))
+        prodplan = cur.execute("SELECT * FROM `production_type` WHERE production_week_number BETWEEN %s AND %s", (week - 3, week,))
         if prodplan > 0:
             prodplan = cur.fetchall()
             cur.close()
@@ -164,34 +159,77 @@ def post_production_plan():
     else:
         cur.close()
         return "Bad request", 404   
-    return "Error in db", 500 #todo
+    return "Internal error in database", 500 #todo
 
 
-# Create new orders
-@app.route('/customer/orders', methods=['POST'])
-def place_order():
-    return "todo", 200
-
-# Create new orders
-@app.route('/customer/orders', methods=['GET'])
-def get_production_plan_summary():
-    return "todo", 200
+# Retrieve four week production plan summary
 
 # Delete a given order
-@app.route('/customer/orders', methods=['DELETE'])
+@app.route('/customer/cancelorder', methods=['DELETE'])
 def delete_order():
-    return "todo", 200
+    if request.method == 'DELETE':
+        cur = mysql.connection.cursor()
+        cur.close()
+    else:
+        return "Wrong method. Only GET is supported.", 405
+
+
+# Create new orders
+@app.route('/customer/orders/new', methods=['POST'])
+def place_order():
+    if request.method == 'POST':
+        cur = mysql.connection.cursor()
+        orderData = request.get_json()
+
+        id = orderData['id']
+        productId = orderData['product_id']
+        customerId = orderData['customer_id']
+        skiType = orderData['ski_type']
+        quantity = orderData['quantity']
+        totalPrice = orderData['total_price']
+        orderStatus = orderData['order_status']
+
+        #todo: create id instead of having user decide it. 
+
+        order = cur.execute("INSERT INTO `order` (`id`, `product_id`, `customer_id`, `ski_type`, `quantity`, `total_price`, `order_status`) \
+            VALUES (%s, %s, %s, %s, %s, %s, %s)", (id, productId, customerId, skiType, quantity, totalPrice, orderStatus,))
+        mysql.connection.commit()
+        cur.close()
+        return jsonify(order), 200
+    else: 
+        return "Wrong method. Only POST is supported.", 405
+
+# get all orders
+@app.route('/customer/orders', methods=['GET'])
+def get_production_plan_summary():
+    if request.method == 'GET':
+        cur = mysql.connection.cursor()
+        cur.close()
+    else:
+        return "Wrong method. Only GET is supported.", 405
+
+
 
 # Retrieve a specific order
-
-@app.route('/customer/orders', methods=['GET'])
+@app.route('/customer/orderbyid', methods=['GET'])
 def get_order_by_id():
-    return "todo", 200
+    if request.method == 'GET':
+        cur = mysql.connection.cursor()
+        id = request.args.get('order_id')
+        retrieved_order = cur.execute("SELECT * FROM `order` WHERE `id`=%s", (id,))
+        cur.close()
+        return jsonify(retrieved_order), 200
+    else:
+        return "Wrong method. Only GET is supported.", 405
 
 # Retrieve orders with since filter
 @app.route('/customer/orders', methods=['GET'])
 def get_orders_since():
-    return "todo", 200
+    if request.method == 'GET':
+        cur = mysql.connection.cursor()
+        cur.close()
+    else:
+        return "Wrong method. Only GET is supported.", 405
 
 
 
@@ -205,7 +243,7 @@ def login():
         username = login_data['username']
         password = login_data['password']
 
-        resp = cur.execute("SELECT * FROM `authentication` WHERE `username`=%s", username)
+        resp = cur.execute("SELECT * FROM `authentication` WHERE `username`=%s", (username,))
 
         # Checks if resp has any content and stores it as an array if it does. If not, an error is returned.
         if resp > 0:
