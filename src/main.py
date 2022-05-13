@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_mysqldb import MySQL
 from hashlib import pbkdf2_hmac
 import random
+import company.customer_rep as customer_rep
 
 app = Flask(__name__)
 
