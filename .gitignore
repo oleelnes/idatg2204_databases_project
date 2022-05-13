@@ -2,3 +2,5 @@
 .vscode
 #Virtual enviorment
 virt_env
+#pycache
+__pycache__/
