@@ -35,9 +35,9 @@ CREATE TABLE `authentication` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_danish_ci;
 
 INSERT INTO `authentication` (`role`, `username`, `password_hashed`, `salt`) VALUES
-('customer', 'customer_user', 'fill_later', 'salt_fill_later'),
-('customer rep', 'customer_rep_user', 'fill_later', 'salt_fill_later'),
-('storekeeper', 'storekeeper_user', 'fill_later', 'salt_fill_later');
+('customer', 'customer_user', 'todo', 'todo'),
+('customer rep', 'customer_rep_user', 'todo', 'todo'),
+('storekeeper', 'storekeeper_user', 'todo', 'todo');
 
 -----------------------------------------------------------
 
@@ -129,7 +129,7 @@ INSERT INTO `franchise` (`name`, `customer_id`, `price_up`, `address`) VALUES
 -- Table structure for table `manafacturer`
 --
 
-CREATE TABLE `manafacturer` (
+CREATE TABLE `manufacturer` (
   `id` int(11) NOT NULL,
   `name` varchar(100) COLLATE utf8mb4_danish_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_danish_ci;
