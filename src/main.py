@@ -5,6 +5,7 @@ from hashlib import pbkdf2_hmac
 import random
 import endpoints.company.customer_rep as customer_rep
 import endpoints.company.storekeeper as storekeeper
+import endpoints.company.production_planner as prod_plan
 import endpoints.public.public as public
 
 app = Flask(__name__)
@@ -46,7 +47,7 @@ def post_order_state():
 # Adds a new production plan from post with json
 @app.route('/productionplanner', methods=['POST'])
 def post_production_plan():
-    return storekeeper.post_production_plan(mysql)
+    return prod_plan.post_production_plan(mysql)
 
 # Retrieve four week production plan summary
 
