@@ -58,17 +58,13 @@ def delete_order():
         id = request.args.get('id')
 
         if id is None:
-            return "Id needs to be passed.", 200
+            return "Id needs to be passed.", 400
 
-        deletedOrder = cur.execute("SELECT * FROM `order` WHERE id=%s", (id,))
-
-        if deletedOrder < 0:
-            return "An order with that id does not exist.", 200
-
-        deletedOrder = cur.fetchall()
-        delete = cur.execute("DELETE * FROM `order` WHERE id=%s", (id,))
+        delete = cur.execute("DELETE FROM `order` WHERE id=%s", (id,))
+        
+        mysql.connection.commit()
         cur.close()
-        return jsonify(deletedOrder)
+        return "successfully deleted order with id " + id, 200
     else:
         return "Wrong method. Only GET is supported.", 405
 
