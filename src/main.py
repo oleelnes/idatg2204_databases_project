@@ -61,7 +61,7 @@ def delete_order():
             return "Id needs to be passed.", 400
 
         delete = cur.execute("DELETE FROM `order` WHERE id=%s", (id,))
-        
+
         mysql.connection.commit()
         cur.close()
         return "successfully deleted order with id " + id, 200
@@ -103,8 +103,8 @@ def place_order():
     else: 
         return "Wrong method. Only POST is supported.", 405
 
-# get all orders
-@app.route('/customer/orders', methods=['GET'])
+# Retrieve a four week production plan summary
+@app.route('/customer/productionplan', methods=['GET'])
 def get_production_plan_summary():
     if request.method == 'GET':
         cur = mysql.connection.cursor()
