@@ -3,6 +3,9 @@ from flask import Flask, request, jsonify
 from flask_mysqldb import MySQL
 from hashlib import pbkdf2_hmac
 import random
+import company.customer_rep as customer_rep
+import company.storekeeper as storekeeper
+import public.public as public
 
 app = Flask(__name__)
 
@@ -23,144 +26,27 @@ def index():
 
 @app.route('/public', methods=['GET'])
 def get_skis():
-    if request.method == 'GET':
-        cur = mysql.connection.cursor()
-        modelname = request.args.get('modelname')
-        if modelname:
-            skis = cur.execute("SELECT model, type, size, description, MSRPP ,url_photo \
-            FROM `product` \
-            WHERE model = %s", (modelname,))
-        else:        
-            skis = cur.execute("SELECT model, type, size, description, MSRPP ,url_photo FROM `product`")
-        if skis > 0:
-            skis = cur.fetchall()
-        cur.close()
-        return jsonify(skis), 200
-    return "Error in db", 500
+    return public.get_skis(mysql)
 
 # Retrieve orders in the "skis available" state
 @app.route('/storekeeper/orders/skisavailable', methods=['GET'])
 def get_skis_available_orders():
-    if request.method == 'GET':
-        cur = mysql.connection.cursor()
-        order = cur.execute("SELECT * FROM `order` WHERE order_status = 'skis available'")
-        if order:
-            order = cur.fetchall()
-            cur.close()
-            return jsonify(order), 200
-        else:
-            cur.close()
-            return "Bad request", 400
-        #something
-    return "Error in db", 500
+    return storekeeper.get_skis_available_orders(mysql)
 
 # Get orders from status as customer rep
 @app.route('/customerrep/orders', methods=['GET'])
 def get_order_from_state():
-    if request.method == 'GET':
-        cur = mysql.connection.cursor()
-        state = request.args.get('state')
-        if state:
-            order = cur.execute("SELECT * FROM `order` WHERE order_status=%s", (state,))
-        else: 
-            cur.close()
-            return "Bad request", 404
-        if state != "":
-            order = cur.fetchall()
-        cur.close()
-        return jsonify(order), 200
-    return "Error in db", 500
-
-
+    return customer_rep.get_order_from_state(mysql)
 
 # Set order status as customer rep for spesific orderid
 @app.route('/customerrep/order', methods=['PATCH'])
 def post_order_state():
-    legal = 0
-    legalStates = []
-    legalStates.append("new")
-    legalStates.append("open")
-    legalStates.append("skis available")
-    legalStates.append("ready to be shipped")
-  
-    
-    if request.method == 'PATCH': 
-        cur = mysql.connection.cursor()
-        content = request.get_json(silent=True)
-        orderid = None
-        state = None
-        if content:
-            orderid = content['orderid']
-            state = content['state']
-
-        if orderid is None or state is None:
-            orderid, state = request.args.get('orderid', 'state')
-        
-        if state and orderid:
-            for val in legalStates:
-                if state == val: 
-                    legal = 1
-            if legal == 1:
-                order = cur.execute("SELECT * FROM `order` WHERE id = %s", (orderid,))
-                if order > 0:
-                    order = cur.fetchall()
-                    change_order_state = cur.execute("UPDATE `order` SET `order_status`=%s", (state,))
-                    mysql.connection.commit()
-                    if state == "fulfilled":
-                        create_transport_request(orderid)
-                order = cur.execute("SELECT * FROM `order` WHERE id = %s", (orderid,))
-                if order > 0:
-                    order = cur.fetchall() 
-                return jsonify(order), 201
-            else:
-                cur.close()
-                return "Bad request", 404   
-        return "Bad request", 404
-    return "Error in db", 500
-
-# Creates a new transport request from the given orderID input parameter            
-def create_transport_request(orderid):
-    cur = mysql.connection.cursor()
-    order = cur.execute("SELECT id FROM `order` WHERE id = %s AND order_status = 'fulfilled'", (orderid,))
-    if order > 0:
-        transport = cur.execute("INSERT INTO `shipment` (`order_id`) VALUES (%s)", (orderid,))#"SELECT * FROM `transport`
-        mysql.connection.commit()
-    cur.close()
-
+    return customer_rep.post_order_state(mysql)
 
 # Adds a new production plan from post with json
 @app.route('/productionplanner', methods=['POST'])
 def post_production_plan():
-    cur = mysql.connection.cursor()
-    content = request.get_json()
-    month = content['month']
-    productid = content['productid']
-    day = content['day']
-    type = content['type']
-    productionAmount = content['productionAmount']
-
-    if month != "" and productid != "":
-        week = 4 * int(month)
-        weeks = range(4)
-        for i in weeks:
-            plan = cur.execute("INSERT INTO `production_plan` (`week_number`, `manafacturer_id`) VALUES (%s, '200000')", (week,))
-            mysql.connection.commit()
-            typeData = cur.execute("INSERT INTO `production_type` \
-                (`production_week_number`, `product_id`, `day`, `type`, `production_amount`) \
-                VALUES (%s, %s, %s, %s, %s)", (week, productid, day, type, productionAmount,))
-            mysql.connection.commit()
-            week += 1
-
-        prodplan = cur.execute("SELECT * FROM `production_type` WHERE production_week_number BETWEEN %s AND %s", (week - 3, week,))
-        if prodplan > 0:
-            prodplan = cur.fetchall()
-            cur.close()
-            return jsonify(prodplan), 201
-    else:
-        cur.close()
-        return "Bad request", 404   
-    return "Internal error in database", 500 #todo
-
+    return storekeeper.post_production_plan(mysql)
 
 # Retrieve four week production plan summary
 
@@ -285,7 +171,7 @@ def login():
             cur.close()
         else:
             cur.close()
-            return "Username not found in database." (400)
+            return "Username not found in database.", (400)
 
         # Fetching data from the database.
         role_db = authentication_data[0]
