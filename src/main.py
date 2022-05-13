@@ -73,14 +73,23 @@ def place_order():
         quantity = orderData['quantity']
         totalPrice = orderData['total_price']
         orderStatus = orderData['order_status']
+        date = orderData['date']
 
-        #todo: create id instead of having user decide it. 
+        if id is None or productId is None or customerId or skiType \
+        is None or quantity is None or totalPrice is None or orderStatus is None or date is None:
+            return "Something is wrong in the json body!", 400
 
-        order = cur.execute("INSERT INTO `order` (`id`, `product_id`, `customer_id`, `ski_type`, `quantity`, `total_price`, `order_status`) \
-            VALUES (%s, %s, %s, %s, %s, %s, %s)", (id, productId, customerId, skiType, quantity, totalPrice, orderStatus,))
+        #todo: create id automatically instead of having user decide it. 
+
+        order = cur.execute("INSERT INTO `order` (`id`, `product_id`, `customer_id`, `ski_type`, `quantity`, `total_price`, `order_status`, `date`) \
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", (id, productId, customerId, skiType, quantity, totalPrice, orderStatus, date))
         mysql.connection.commit()
+
+        order_response = cur.execute("SELECT * FROM `order` WHERE id=%s", (id,))
+        order_response = cur.fetchall()
+
         cur.close()
-        return jsonify(order), 200
+        return jsonify(order_response), 200
     else: 
         return "Wrong method. Only POST is supported.", 405
 
@@ -102,17 +111,29 @@ def get_order_by_id():
         cur = mysql.connection.cursor()
         id = request.args.get('order_id')
         retrieved_order = cur.execute("SELECT * FROM `order` WHERE `id`=%s", (id,))
+        retrieved_order = cur.fetchall()
         cur.close()
         return jsonify(retrieved_order), 200
     else:
         return "Wrong method. Only GET is supported.", 405
 
 # Retrieve orders with since filter
-@app.route('/customer/orders', methods=['GET'])
+@app.route('/customer/orderssince', methods=['GET'])
 def get_orders_since():
     if request.method == 'GET':
         cur = mysql.connection.cursor()
+
+        date = request.args.get('date')
+
+        if date is None:
+            return "Date must be entered as a key.", 400
+        
+        #"SELECT * FROM `order` BETWEEN %s AND CURDATE() ORDER BY date asc"
+        orders = cur.execute("SELECT * FROM `order` WHERE `date` BETWEEN %s AND CURDATE() ORDER BY date asc", (date,))
+        orders = cur.fetchall()
         cur.close()
+
+        return jsonify(orders)
     else:
         return "Wrong method. Only GET is supported.", 405
 

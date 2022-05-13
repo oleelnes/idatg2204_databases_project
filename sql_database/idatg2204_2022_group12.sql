@@ -150,12 +150,13 @@ CREATE TABLE `order` (
   `ski_type` varchar(100) COLLATE utf8mb4_danish_ci DEFAULT NULL,
   `quantity` int(11) DEFAULT NULL,
   `total_price` int(11) DEFAULT NULL,
-  `order_status` varchar(100) COLLATE utf8mb4_danish_ci DEFAULT NULL
+  `order_status` varchar(100) COLLATE utf8mb4_danish_ci DEFAULT NULL,
+  `date` date
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_danish_ci;
 
-INSERT INTO `order` (`id`, `product_id`, `customer_id`, `ski_type`, `quantity`, `total_price`, `order_status`) VALUES 
-('100000', '000001', '300000', 'skate', '50', '6150', 'new'), 
-('100001', '000002', '300000', 'skate', '2', '200', 'skis available');
+INSERT INTO `order` (`id`, `product_id`, `customer_id`, `ski_type`, `quantity`, `total_price`, `order_status`, `date`) VALUES 
+('100000', '000001', '300000', 'skate', '50', '6150', 'new', `2022-04-20`), 
+('100001', '000002', '300000', 'skate', '2', '200', 'skis available', `2022-04-22`);
 
 -- --------------------------------------------------------
 
