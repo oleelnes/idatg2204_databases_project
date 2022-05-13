@@ -1,3 +1,4 @@
+import json
 from flask import Flask, request, jsonify
 from flask_mysqldb import MySQL
 from hashlib import pbkdf2_hmac
@@ -54,7 +55,16 @@ def post_production_plan():
 def delete_order():
     if request.method == 'DELETE':
         cur = mysql.connection.cursor()
+        id = request.args.get('id')
+
+        if id is None:
+            return "Id needs to be passed.", 400
+
+        delete = cur.execute("DELETE FROM `order` WHERE id=%s", (id,))
+        
+        mysql.connection.commit()
         cur.close()
+        return "successfully deleted order with id " + id, 200
     else:
         return "Wrong method. Only GET is supported.", 405
 
