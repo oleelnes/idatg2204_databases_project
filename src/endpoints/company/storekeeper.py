@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_mysqldb import MySQL
+import endpoints.transport.transporter as transporter
 
 # Adds a new production plan from post with json
 def post_production_plan(mysql):
@@ -46,4 +47,45 @@ def get_skis_available_orders(mysql):
             cur.close()
             return "Bad request", 400
         #something
-    return "Error in db", 500
+    return "Internal error in database", 500
+
+# Set order status as storekeeper for spesific orderid to ready to be shipped
+# when an order has been filles
+def change_order_state(mysql):
+    legal = 0
+    legalStates = []
+    legalStates.append("ready to be shipped")  
+    
+    if request.method == 'PATCH': 
+        cur = mysql.connection.cursor()
+        content = request.get_json(silent=True)
+        orderid = None
+        state = None
+        if content:
+            orderid = content['orderid']
+            state = content['state']
+
+        if orderid is None or state is None:
+            orderid, state = request.args.get('orderid', 'state')
+        
+        if state and orderid:
+            for val in legalStates:
+                if state == val: 
+                    legal = 1
+            if legal == 1:
+                order = cur.execute("SELECT * FROM `order` WHERE id = %s", (orderid,))
+                if order > 0:
+                    order = cur.fetchall()
+                    change_order_state = cur.execute("UPDATE `order` SET `order_status`=%s", (state,))
+                    mysql.connection.commit()
+                    if state == "ready to be shipped":
+                        transporter.create_transport_request(mysql, orderid)
+                order = cur.execute("SELECT * FROM `order` WHERE id = %s", (orderid,))
+                if order > 0:
+                    order = cur.fetchall() 
+                return jsonify(order), 201
+            else:
+                cur.close()
+                return "Bad request", 404   
+        return "Bad request", 404
+    return "Internal error in database", 500
