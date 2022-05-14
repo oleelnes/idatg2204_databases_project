@@ -19,7 +19,7 @@ app.config['MYSQL_DB']="idatg2204_2022_group12"
 mysql = MySQL(app)
 
 ALPHABET_AND_NUMBERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-role_user = ""
+role_user = "customer"
 
 @app.route('/')
 def index():
@@ -33,6 +33,10 @@ def get_skis():
 # Retrieve orders in the "skis available" state
 @app.route('/storekeeper/orders/skisavailable', methods=['GET'])
 def get_skis_available_orders():
+    if role_user != "storekeeper":
+        response = '{"Error": "You are not authenticated for this endpoint.", \
+            "Try": "Log into a storekeeper user at endpoint authentication/login"}'
+        return json.loads(response), 401
     return storekeeper.get_skis_available_orders(mysql)
 
 # Get orders from status as customer rep
@@ -82,17 +86,19 @@ def get_order_by_id():
 def get_orders_since():
     return customer.get_orders_since(mysql)
 
-    # Retrieve orders with since filter
+# Create a new user and insert it into the database
 @app.route('/authentication/newuser', methods=['POST'])
 def new_user():
     if request.method ==  'POST':
         print("role: " + role_user)
         if role_user != "admin":
-            return "You are not authenticated for creating new users.", 400
+            return "You are not authenticated for creating new users.", 401
         cur = mysql.connection.cursor()
         password = request.args.get('password')
         username = request.args.get('username') 
         role = request.args.get('role')
+        if role == "admin":
+            return "You don't have the authentication to create an admin user!", 401
         salt = createSalt()
         hashedpassword = createHashedPassword(password, salt)
         store = cur.execute("INSERT INTO `authentication` (`role`, `username`, `password_hashed`, `salt`) \
