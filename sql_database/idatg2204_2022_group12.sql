@@ -30,14 +30,15 @@ SET time_zone = "+00:00";
 CREATE TABLE `authentication` (
   `role` varchar(30) COLLATE utf8mb4_danish_ci DEFAULT NULL,
   `username` varchar(30) COLLATE utf8mb4_danish_ci DEFAULT NULL,
-  `password_hashed` varchar(52) COLLATE utf8mb4_danish_ci DEFAULT NULL,
+  `password_hashed` varchar(64) COLLATE utf8mb4_danish_ci DEFAULT NULL,
   `salt` varchar(12) COLLATE utf8mb4_danish_ci DEFAULT NULL 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_danish_ci;
 
 INSERT INTO `authentication` (`role`, `username`, `password_hashed`, `salt`) VALUES
-('customer', 'customer_user', 'todo', 'todo'),
-('customer rep', 'customer_rep_user', 'todo', 'todo'),
-('storekeeper', 'storekeeper_user', 'todo', 'todo');
+('customer', 'customer_user', 'd855cc34ae18278e7d8900371870b016d6d28edd2a0698c18bb26b10b116fbc4', 'tn13YOgAoTdD'),
+('customer rep', 'customer_rep_user', '69ec77d1d6e19014fc85c9ea9660e0a21e39135a1eb63ea62f7bf1e85cdbe34d', 'J33G19z8t8Cd'),
+('storekeeper', 'storekeeper_user', '2530bf2ed30e6ac05a32d1045e1ef15040403f9db372ec6ff88419dd303fc473', 'Ax7FV8hgklO0'),
+('admin', 'admin_user', 'ffd9dcae322857a2f8113a3a348dde5be2bfdcfee6ee17383ae93a6acb3ecb3d', 'eshdSfy1JQJI');
 
 -- --------------------------------------------------------
 

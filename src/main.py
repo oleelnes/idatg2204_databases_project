@@ -82,11 +82,34 @@ def get_order_by_id():
 def get_orders_since():
     return customer.get_orders_since(mysql)
 
+    # Retrieve orders with since filter
+@app.route('/authentication/newuser', methods=['POST'])
+def new_user():
+    if request.method ==  'POST':
+        print("role: " + role_user)
+        if role_user != "admin":
+            return "You are not authenticated for creating new users.", 400
+        cur = mysql.connection.cursor()
+        password = request.args.get('password')
+        username = request.args.get('username') 
+        role = request.args.get('role')
+        salt = createSalt()
+        hashedpassword = createHashedPassword(password, salt)
+        store = cur.execute("INSERT INTO `authentication` (`role`, `username`, `password_hashed`, `salt`) \
+            VALUES (%s, %s, %s, %s)", (role, username, hashedpassword.hex(), salt,))
+        mysql.connection.commit()
+
+        stored = cur.execute("SELECT * FROM `authentication` WHERE username=%s", (username,))
+        stored = cur.fetchall()
+        cur.close()
+        return jsonify(stored), 200
+    return "Wrong method, only POST is supported.", 400
+
 
 
 
 # Login endpoint
-@app.route('/login', methods=['POST'])
+@app.route('/authentication/login', methods=['POST'])
 def login():
     cur = mysql.connection.cursor()
     if request.method == 'POST':
@@ -111,10 +134,12 @@ def login():
 
         if createHashedPassword(password, salt_db).hex() == password_db:
             # Sets the role_user variable which decides the level of authorization the user has.
+            global role_user 
             role_user = role_db
+            print("role: " + role_user)
             return "Successfully logged into user " + username + ", role: " + role_user, (200)
         else: 
-            return "Wrong password.", (400)
+            return "Wrong password.", (403)
     else:
         cur.close()
         return "Method not supported. Try again with POST method.", (501)

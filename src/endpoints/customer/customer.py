@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify
 from flask_mysqldb import MySQL
 
+from main import createHashedPassword, createSalt
+
 def place_order(mysql):
     if request.method == 'POST':
         cur = mysql.connection.cursor()
@@ -77,3 +79,7 @@ def get_orders_since(mysql):
         return jsonify(orders)
     else:
         return "Wrong method. Only GET is supported.", 405
+
+
+        
+
