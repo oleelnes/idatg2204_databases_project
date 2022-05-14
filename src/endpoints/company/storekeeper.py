@@ -100,7 +100,7 @@ def post_new_entry_in_record(mysql):
             entry = cur.execute("SELECT * FROM `ski_production_record` WHERE id = %s", (inventoryid,))
             if entry > 0:
                 entry.cur.fetchall()
-                post_entry = cur.execute("INSERT INTO `ski_production_record` (`inventory_id`, `date`) VALUES (%s, %s)"(inventoryid, date,))
+                post_entry = cur.execute("INSERT INTO `ski_production_record` (`inventory_id`, `date`) VALUES (%s, %s)",(inventoryid, date,))
                 entry = cur.execute("SELECT * FROM `ski_production_record` WHERE inventory_id = %s", (inventoryid,))
             if entry > 0:
                 entry.cur.fetchall()
@@ -143,13 +143,13 @@ def change_skis_in_order(mysql):
             date = help.sanitize_input_date(content['date'])
         if orderid and int(amount) > 0 and date:
             order = cur.execute("SELECT quantity FROM `order`")
-            order = cur.fetchall()
             if order > 0:
+                order = cur.fetchall()
                 prev_amount = order[0]
-                cur.execute("INSERT INTO `order_record` (`orderid`, `quantity`, `date`) VALUES (%s, %s, %s)" (orderid, prev_amount, date,))
-                cur.execute("UPDATE `order` SET `quantity`=%s WHERE id = %s" (amount, orderid,))
+                order = cur.execute("INSERT INTO `order_record` (`order_id`, `quantity`, `date`) VALUES (%s, %s, %s)", (orderid, prev_amount, date,))
+                order = cur.execute("UPDATE `order` SET `quantity`=%s WHERE id = %s", (amount, orderid,))
                 mysql.connection.commit()
-                order = cur.execute("SELECT * FROM `order` WHERE id = %s" (orderid,))
+                order = cur.execute("SELECT * FROM `order` WHERE id = %s", (orderid,))
                 order = cur.fetchall()
                 cur.close()
                 return jsonify(order), 200
