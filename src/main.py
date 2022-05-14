@@ -15,7 +15,7 @@ app = Flask(__name__)
 app.config['MYSQL_HOST']="127.0.0.1"#"localhost"
 app.config['MYSQL_USER']="root"
 app.config['MYSQL_PASSWORD']=""
-app.config['MYSQL_DB']="idatg2204_2022_group12"
+app.config['MYSQL_DB']="idatg2204_2022_group12_v3"
 
 mysql = MySQL(app)
 
@@ -62,7 +62,10 @@ def change_order_state():
 # Adds a new production plan from post with json
 @app.route('/productionplanner', methods=['POST'])
 def post_production_plan():
-    # TODO: what authentication level is this?
+    if role_user != "productionplanner":
+        response = '{"Error": "You are not authenticated for this endpoint.", \
+            "Try": "Log into a customer rep user at endpoint authentication/login"}'
+        return json.loads(response), 401
     return prod_plan.post_production_plan(mysql)
 
 # Retrieve four week production plan summary
@@ -149,7 +152,23 @@ def new_user():
         return jsonify(stored), 200
     return "Wrong method, only POST is supported.", 400
 
+# Transporter get info about one or multiple orders in the ready to be shipped state
+@app.route('/transport/orderinfo', methods=['GET'])
+def get_order_info_ready_to_be_shipped():
+    if role_user != "transporter":
+        response = '{"Error": "You are not authenticated for this endpoint.", \
+                "Try": "Log into a transporter user at endpoint authentication/login"}'
+        return json.loads(response), 401
+    return transport.get_order_info_ready_to_be_shipped(mysql)
 
+# Changes the state of a shipment with order id in the Transporter endpoint
+@app.route('/transport/orderstatus', methods=['PATCH'])
+def change_shipment_state():
+    if role_user != "transporter":
+        response = '{"Error": "You are not authenticated for this endpoint.", \
+                "Try": "Log into a transporter user at endpoint authentication/login"}'
+        return json.loads(response), 401
+    return transport.change_shipment_state(mysql)
 
 
 # Login endpoint
@@ -198,24 +217,6 @@ def createSalt():
 # Function that returns a hashed password with sha256 and salt.
 def createHashedPassword(password, salt):
     return pbkdf2_hmac('sha256', str.encode(password), str.encode(salt), 200000)
-
-# Transporter get info about one or multiple orders in the ready to be shipped state
-@app.route('/transport/orderinfo', methods=['GET'])
-def get_order_info_ready_to_be_shipped():
-    if role_user != "transporter":
-        response = '{"Error": "You are not authenticated for this endpoint.", \
-                "Try": "Log into a transporter user at endpoint authentication/login"}'
-        return json.loads(response), 401
-    return transport.get_order_info_ready_to_be_shipped(mysql)
-
-# Changes the state of a shipment with order id in the Transporter endpoint
-@app.route('/transport/orderstatus', methods=['PATCH'])
-def change_shipment_state():
-    if role_user != "transporter":
-        response = '{"Error": "You are not authenticated for this endpoint.", \
-                "Try": "Log into a transporter user at endpoint authentication/login"}'
-        return json.loads(response), 401
-    return transport.change_shipment_state(mysql)
 
 if __name__ == '__main__':
     app.run(debug=True)
