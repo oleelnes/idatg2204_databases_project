@@ -26,7 +26,7 @@ def get_order_from_state(mysql):
     return "Internal error in database", 500
 
 # Set order status as customer rep for spesific orderid
-def post_order_state(mysql):
+def change_order_state(mysql):
     legal = 0
     legalStates = []
     legalStates.append("new")
