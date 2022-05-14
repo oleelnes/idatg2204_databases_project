@@ -112,9 +112,18 @@ def post_new_entry_in_record(mysql):
         return "Wrong method. Only POST is supported.", 405
     return "Internal error in database", 500 
 
-# Retrive orders
+# Retrive either a spesific order or all orders
 def get_orders(mysql):
     if request.method == 'GET':
         cur = mysql.connection.cursor()
+        id = help.sanitize_input_numbers(request.args.get('order_id'))
+        if id:
+            retrieved_order = cur.execute("SELECT * FROM `order` WHERE `id`=%s", (id,))
+        else:
+            retrieved_order = cur.execute("SELECT * FROM `order`")
+            
+        retrieved_order = cur.fetchall()
+        cur.close()
+        return jsonify(retrieved_order), 200
     else:
         return "Wrong method. Only GET is supported.", 405

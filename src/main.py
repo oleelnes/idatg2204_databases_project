@@ -59,6 +59,15 @@ def post_new_entry_in_record():
         return json.loads(response), 401
     return storekeeper.post_new_entry_in_record(mysql)
 
+# Retrive either a spesific order or all orders for the storekeeper endpoint
+@app.route('/storekeeper/orders', methods=['POST'])
+def get_orders_storekeeper():
+    if role_user != "storekeeper":
+        response = '{"Error": "You are not authenticated for this endpoint.", \
+            "Try": "Log into a storekeeper user at endpoint authentication/login"}'
+        return json.loads(response), 401
+    return storekeeper.get_orders(mysql)    
+
 # Get orders from status as customer rep
 @app.route('/customerrep/orders', methods=['GET'])
 def get_order_from_state():
