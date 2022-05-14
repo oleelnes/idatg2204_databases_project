@@ -65,7 +65,10 @@ def change_shipment_state(mysql):
                     order = cur.fetchall()
                     change_shipment_state = cur.execute("UPDATE `shipment` SET `state`=%s", (state,))
                     mysql.connection.commit()
-                    
+                    order = cur.execute("SELECT id FROM `shipment` WHERE order_id = %s", (orderid,))
+                    order = cur.fetchall()
+                    add_record = cur.execute("INSERT INTO `shipment_record` (`shipment_id`, `state`, `date`) VALUES (%s, %s, CURDATE())", (order[0], state,))
+                    mysql.connection.commit()
                 order = cur.execute("SELECT * FROM `shipment` WHERE order_id = %s", (orderid,))
                 if order > 0:
                     order = cur.fetchall() 
