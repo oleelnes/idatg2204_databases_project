@@ -253,3 +253,40 @@ Example output:
 
 
 ## Authentication endpoint
+
+**127.0.0.1:5000/authentication/login**  
+Admin:  
+username: admin_user  
+password: admin1  
+
+Example input:
+```json
+{
+    "username":"transport1",
+    "password": "tran1"
+}
+```
+Example output:
+```json
+Successfully logged into user transport1, role: transporter
+```
+
+**127.0.0.1:5000/authentication/newuser?username=&password=&role=**  
+User creation:
+- **Step 1 log in as ADMIN see credentials above**  
+- Step 2 use the uri and fill in username, password and role
+
+Example:  
+127.0.0.1:5000/authentication/newuser?username=storekeeper1&password=stor1&role=storekeeper
+
+Example output:  
+```json
+[
+    [
+        "storekeeper",
+        "storekeeper1",
+        "90cffbc621ccdf4cd76c720678d589990081ed7a97a67f58e2c3a8f6beeedf82",
+        "Pz4wlCeSx3Qa"
+    ]
+]
+```
