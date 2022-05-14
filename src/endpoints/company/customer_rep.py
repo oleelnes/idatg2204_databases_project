@@ -10,8 +10,9 @@ def get_order_from_state(mysql):
         if state:
             order = cur.execute("SELECT * FROM `order` WHERE order_status=%s", (state,))
         else: 
-            cur.close()
-            return "Bad request", 404
+            order = cur.execute("SELECT * FROM `order`")
+            #cur.close()
+            #return "Bad request", 404
         if state != "":
             order = cur.fetchall()
         cur.close()
@@ -54,7 +55,7 @@ def change_order_state(mysql):
                 order = cur.execute("SELECT * FROM `order` WHERE id = %s", (orderid,))
                 if order > 0:
                     order = cur.fetchall() 
-                return jsonify(order), 201
+                return jsonify(order), 200
             else:
                 cur.close()
                 return "Bad request", 404   
