@@ -24,7 +24,25 @@ role_user = "customer"
 
 @app.route('/')
 def index():
-    message = "Up and running!\nSee the endpoints:\n\n/public"
+    message = "Up and running!\nSee the endpoints:\n\n/public GET\
+        \n/storekeeper/orders/skisavailable GET\
+        \n/storekeeper/inventoryQA POST\
+        \n/storekeeper/record POST\
+        \n/storekeeper/orders GET\
+        \n/storekeeper/changeorder POST\
+        \n/customerrep/orders GET\
+        \n/customerrep/order PATCH\
+        \n/productionplanner POST\
+        \n/customer/cancelorder DELETE\
+        \n/customer/orders/new POST\
+        \n/customer/productionplan GET\
+        \n/customer/orderbyid GET\
+        \n/customer/orderssince GET\
+        \n/transport/orderinfo GET\
+        \n/transport/orderstatus PATCH\
+        \n/authentication/newuser POST\
+        \n/authentication/login POST\
+        \n" 
     return message
 
 # Public, gets information about all skis
@@ -152,6 +170,24 @@ def get_orders_since():
         return json.loads(response), 401
     return customer.get_orders_since(mysql)
 
+# Transporter get info about one or multiple orders in the ready to be shipped state
+@app.route('/transport/orderinfo', methods=['GET'])
+def get_order_info_ready_to_be_shipped():
+    if role_user != "transporter":
+        response = '{"Error": "You are not authenticated for this endpoint.", \
+                "Try": "Log into a transporter user at endpoint authentication/login"}'
+        return json.loads(response), 401
+    return transport.get_order_info_ready_to_be_shipped(mysql)
+
+# Changes the state of a shipment with order id in the Transporter endpoint
+@app.route('/transport/orderstatus', methods=['PATCH'])
+def change_shipment_state():
+    if role_user != "transporter":
+        response = '{"Error": "You are not authenticated for this endpoint.", \
+                "Try": "Log into a transporter user at endpoint authentication/login"}'
+        return json.loads(response), 401
+    return transport.change_shipment_state(mysql)
+
 # Create a new user and insert it into the database
 @app.route('/authentication/newuser', methods=['POST'])
 def new_user():
@@ -198,25 +234,6 @@ def new_user():
         cur.close()
         return jsonify(stored), 200
     return "Wrong method, only POST is supported.", 400
-
-# Transporter get info about one or multiple orders in the ready to be shipped state
-@app.route('/transport/orderinfo', methods=['GET'])
-def get_order_info_ready_to_be_shipped():
-    if role_user != "transporter":
-        response = '{"Error": "You are not authenticated for this endpoint.", \
-                "Try": "Log into a transporter user at endpoint authentication/login"}'
-        return json.loads(response), 401
-    return transport.get_order_info_ready_to_be_shipped(mysql)
-
-# Changes the state of a shipment with order id in the Transporter endpoint
-@app.route('/transport/orderstatus', methods=['PATCH'])
-def change_shipment_state():
-    if role_user != "transporter":
-        response = '{"Error": "You are not authenticated for this endpoint.", \
-                "Try": "Log into a transporter user at endpoint authentication/login"}'
-        return json.loads(response), 401
-    return transport.change_shipment_state(mysql)
-
 
 # Login endpoint
 @app.route('/authentication/login', methods=['POST'])
