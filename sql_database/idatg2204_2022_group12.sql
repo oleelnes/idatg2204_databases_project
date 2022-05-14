@@ -156,8 +156,8 @@ CREATE TABLE `order` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_danish_ci;
 
 INSERT INTO `order` (`id`, `product_id`, `customer_id`, `ski_type`, `quantity`, `total_price`, `order_status`, `date`) VALUES 
-('100000', '000001', '300000', 'skate', '50', '6150', 'new', `2022-04-20`), 
-('100001', '000002', '300000', 'skate', '2', '200', 'skis available', `2022-04-22`);
+('100000', '000001', '300000', 'skate', '50', '6150', 'new', '2022-04-20'), 
+('100001', '000002', '300000', 'skate', '2', '200', 'skis available', '2022-04-22');
 
 -- --------------------------------------------------------
 
@@ -576,12 +576,6 @@ ALTER TABLE `order_setting`
   ADD CONSTRAINT `fk_store_info_id_order_setting` FOREIGN KEY (`store_info_id`) REFERENCES `store_info` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Constraints for table `production_plan`
---
-ALTER TABLE `production_plan`
-  ADD CONSTRAINT `fk_manufacturer_id_production_plans` FOREIGN KEY (`manufacturer_id`) REFERENCES `manufacturer` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
 -- Constraints for table `production_type`
 --
 ALTER TABLE `production_type`
@@ -617,12 +611,6 @@ ALTER TABLE `store_info`
 --
 ALTER TABLE `team_skier`
   ADD CONSTRAINT `fk_customer_id_team_skier` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `transport`
---
-ALTER TABLE `transport`
-  ADD CONSTRAINT `fk_shipment_id_transport` FOREIGN KEY (`shipment_id`) REFERENCES `shipment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
