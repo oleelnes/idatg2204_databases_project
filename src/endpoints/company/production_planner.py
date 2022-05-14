@@ -21,13 +21,16 @@ def post_production_plan(mysql):
         if week != "" and int(week) < 50 and int(week) > 0 and productid != "" and day != "" and type != "" and productionAmount != "" and manufacturer_id != "":
             weeks = range(4)
             for i in weeks:
-                plan = cur.execute("INSERT INTO `production_plan` (`week_number`, `manufacturer_id`) VALUES (%s, %s)", (week, manufacturer_id,))
-                mysql.connection.commit()
-                typeData = cur.execute("INSERT INTO `production_type` \
-                    (`production_week_number`, `product_id`, `day`, `type`, `production_amount`) \
-                    VALUES (%s, %s, %s, %s, %s)", (week, productid, day, type, productionAmount,))
-                mysql.connection.commit()
-                week += 1
+                tmp = cur.execute("SELECT week_number FROM `production_plan` WHERE week_number = %s", (week,))
+                tmp = cur.fetchall()
+                if tmp == None:
+                    plan = cur.execute("INSERT INTO `production_plan` (`week_number`, `manufacturer_id`) VALUES (%s, %s)", (week, manufacturer_id,))
+                    mysql.connection.commit()
+                    typeData = cur.execute("INSERT INTO `production_type` \
+                        (`production_week_number`, `product_id`, `day`, `type`, `production_amount`) \
+                        VALUES (%s, %s, %s, %s, %s)", (week, productid, day, type, productionAmount,))
+                    mysql.connection.commit()
+                    week += 1
 
             prodplan = cur.execute("SELECT * FROM `production_type` WHERE production_week_number BETWEEN %s AND %s", (week - 4, week,))
             if prodplan > 0:
