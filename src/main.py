@@ -66,7 +66,16 @@ def get_orders_storekeeper():
         response = '{"Error": "You are not authenticated for this endpoint.", \
             "Try": "Log into a storekeeper user at endpoint authentication/login"}'
         return json.loads(response), 401
-    return storekeeper.get_orders(mysql)    
+    return storekeeper.get_orders(mysql) 
+
+# Changes the quantity of skis in an order and adds the changes to transaction table
+@app.route('/storekeeper/changeorder', methods=['POST'])
+def change_skis_in_order():
+    if role_user != "storekeeper":
+        response = '{"Error": "You are not authenticated for this endpoint.", \
+            "Try": "Log into a storekeeper user at endpoint authentication/login"}'
+        return json.loads(response), 401
+    return storekeeper.change_skis_in_order(mysql)
 
 # Get orders from status as customer rep
 @app.route('/customerrep/orders', methods=['GET'])

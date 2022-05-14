@@ -127,3 +127,35 @@ def get_orders(mysql):
         return jsonify(retrieved_order), 200
     else:
         return "Wrong method. Only GET is supported.", 405
+
+# Changes the quantity of skis in an order and adds the changes to transaction table
+def change_skis_in_order(mysql):
+    if request.method == 'POST':
+        cur = mysql.connection.cursor()
+        content = request.get_json(silent=True)
+        orderid = None
+        amount = None
+        date = None
+        prev_amount = None
+        if content:
+            orderid = help.sanitize_input_numbers(content['orderid'])
+            amount = help.sanitize_input_numbers(content['amount'])
+            date = help.sanitize_input_date(content['date'])
+        if orderid and int(amount) > 0 and date:
+            order = cur.execute("SELECT quantity FROM `order`")
+            order = cur.fetchall()
+            if order > 0:
+                prev_amount = order[0]
+                cur.execute("INSERT INTO `order_record` (`orderid`, `quantity`, `date`) VALUES (%s, %s, %s)" (orderid, prev_amount, date,))
+                cur.execute("UPDATE `order` SET `quantity`=%s WHERE id = %s" (amount, orderid,))
+                mysql.connection.commit()
+                order = cur.execute("SELECT * FROM `order` WHERE id = %s" (orderid,))
+                order = cur.fetchall()
+                cur.close()
+                return jsonify(order), 200
+            else:
+                cur.close()
+                return "Bad request", 404
+    else:
+        return "Wrong method. Only POST is supported.", 405
+    return "Internal error in database", 500 
