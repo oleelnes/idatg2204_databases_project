@@ -42,13 +42,22 @@ def get_skis_available_orders():
     return storekeeper.get_skis_available_orders(mysql)
 
 # Set QA pass or not passed on inventory
-@app.route('/storekeeper/orders/inventoryQA', methods=['GET'])
+@app.route('/storekeeper/inventoryQA', methods=['GET'])
 def change_inventory_QA_status():
     if role_user != "storekeeper":
         response = '{"Error": "You are not authenticated for this endpoint.", \
             "Try": "Log into a storekeeper user at endpoint authentication/login"}'
         return json.loads(response), 401
     return storekeeper.change_inventory_QA_status(mysql)
+
+# Post new row in record over newly produced skis for the storekeeper endpoint
+@app.route('/storekeeper/record', methods=['POST'])
+def post_new_entry_in_record():
+    if role_user != "storekeeper":
+        response = '{"Error": "You are not authenticated for this endpoint.", \
+            "Try": "Log into a storekeeper user at endpoint authentication/login"}'
+        return json.loads(response), 401
+    return storekeeper.post_new_entry_in_record(mysql)
 
 # Get orders from status as customer rep
 @app.route('/customerrep/orders', methods=['GET'])

@@ -84,3 +84,37 @@ def change_inventory_QA_status(mysql):
             cur.close()
             return "Bad request", 404
     return "Internal error in database", 500
+
+# Post new row in record over newly produced skis
+def post_new_entry_in_record(mysql):
+    if request.method == 'POST':
+        cur = mysql.connection.cursor()
+        content = request.get_json(silent=True)
+        inventoryid = None
+        date = None
+        if content:
+            inventoryid = help.sanitize_input_numbers(content['inventoryid'])
+            date = help.sanitize_input_date(content['date'])
+        
+        if inventoryid != "" and date != "":
+            entry = cur.execute("SELECT * FROM `ski_production_record` WHERE id = %s", (inventoryid,))
+            if entry > 0:
+                entry.cur.fetchall()
+                post_entry = cur.execute("INSERT INTO `ski_production_record` (`inventory_id`, `date`) VALUES (%s, %s)"(inventoryid, date,))
+                entry = cur.execute("SELECT * FROM `ski_production_record` WHERE inventory_id = %s", (inventoryid,))
+            if entry > 0:
+                entry.cur.fetchall()
+                return jsonify(entry), 201
+            else:
+                cur.close()
+                return "Bad request", 404
+    else:
+        return "Wrong method. Only POST is supported.", 405
+    return "Internal error in database", 500 
+
+# Retrive orders
+def get_orders(mysql):
+    if request.method == 'GET':
+        cur = mysql.connection.cursor()
+    else:
+        return "Wrong method. Only GET is supported.", 405
