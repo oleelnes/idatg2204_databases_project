@@ -42,16 +42,25 @@ def get_skis_available_orders():
 # Get orders from status as customer rep
 @app.route('/customerrep/orders', methods=['GET'])
 def get_order_from_state():
+    if role_user != "customer rep":
+        response = '{"Error": "You are not authenticated for this endpoint.", \
+            "Try": "Log into a customer rep user at endpoint authentication/login"}'
+        return json.loads(response), 401
     return customer_rep.get_order_from_state(mysql)
 
 # Set order status as customer rep for spesific orderid
 @app.route('/customerrep/order', methods=['PATCH'])
 def post_order_state():
+    if role_user != "customer rep":
+        response = '{"Error": "You are not authenticated for this endpoint.", \
+            "Try": "Log into a customer rep user at endpoint authentication/login"}'
+        return json.loads(response), 401
     return customer_rep.post_order_state(mysql)
 
 # Adds a new production plan from post with json
 @app.route('/productionplanner', methods=['POST'])
 def post_production_plan():
+    # TODO: what authentication level is this?
     return prod_plan.post_production_plan(mysql)
 
 # Retrieve four week production plan summary
@@ -59,31 +68,47 @@ def post_production_plan():
 # Delete a given order
 @app.route('/customer/cancelorder', methods=['DELETE'])
 def delete_order():
+    if role_user != "customer" or role_user != "customer rep" or role_user != "storekeeper":
+        response = '{"Error": "You are not authenticated for this endpoint.", \
+            "Try": "Log into a customer user at endpoint authentication/login"}'
+        return json.loads(response), 401
     return customer.delete_order(mysql)
 
 
 # Create new orders
 @app.route('/customer/orders/new', methods=['POST'])
 def place_order():
+    if role_user != "customer" or role_user != "customer rep" or role_user != "storekeeper":
+        response = '{"Error": "You are not authenticated for this endpoint.", \
+            "Try": "Log into a customer user at endpoint authentication/login"}'
+        return json.loads(response), 401
     return customer.place_order(mysql)
 
 # Retrieve a four week production plan summary
 @app.route('/customer/productionplan', methods=['GET'])
 def get_production_plan_summary():
-    if request.method == 'GET':
-        cur = mysql.connection.cursor()
-        cur.close()
-    else:
-        return "Wrong method. Only GET is supported.", 405
+    if role_user != "customer" or role_user != "customer rep" or role_user != "storekeeper":
+        response = '{"Error": "You are not authenticated for this endpoint.", \
+            "Try": "Log into a customer user at endpoint authentication/login"}'
+        return json.loads(response), 401
+    return customer.get_production_plan_summary(mysql)
 
 # Retrieve a specific order
 @app.route('/customer/orderbyid', methods=['GET'])
 def get_order_by_id():
+    if role_user != "customer" or role_user != "customer rep" or role_user != "storekeeper":
+        response = '{"Error": "You are not authenticated for this endpoint.", \
+            "Try": "Log into a customer user at endpoint authentication/login"}'
+        return json.loads(response), 401
     return customer.get_order_by_id(mysql)
 
 # Retrieve orders with since filter
 @app.route('/customer/orderssince', methods=['GET'])
 def get_orders_since():
+    if role_user != "customer" or role_user != "customer rep" or role_user != "storekeeper":
+        response = '{"Error": "You are not authenticated for this endpoint.", \
+            "Try": "Log into a customer user at endpoint authentication/login"}'
+        return json.loads(response), 401
     return customer.get_orders_since(mysql)
 
 # Create a new user and insert it into the database
