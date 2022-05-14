@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: May 14, 2022 at 10:34 PM
+-- Generation Time: May 15, 2022 at 12:39 AM
 -- Server version: 10.4.22-MariaDB
 -- PHP Version: 8.1.1
 
@@ -166,6 +166,13 @@ CREATE TABLE `inventory` (
   `amount` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_danish_ci;
 
+--
+-- Dumping data for table `inventory`
+--
+
+INSERT INTO `inventory` (`id`, `product_id`, `status`, `passed_QA`, `amount`) VALUES
+(1, 3, 'filled', 1, 100);
+
 -- --------------------------------------------------------
 
 --
@@ -207,7 +214,8 @@ CREATE TABLE `order` (
 
 INSERT INTO `order` (`id`, `product_id`, `customer_id`, `ski_type`, `quantity`, `total_price`, `order_status`, `date`) VALUES
 (100000, 1, 300000, 'skate', 50, 6150, 'new', '2022-04-20'),
-(100001, 2, 300000, 'skate', 24, 200, 'skis available', '2022-04-22');
+(100001, 2, 300000, 'skate', 24, 200, 'skis available', '2022-04-22'),
+(100002, 8, 300000, 'skate', 8, 8900, 'ready to be shipped', '2022-04-23');
 
 -- --------------------------------------------------------
 
@@ -432,6 +440,14 @@ CREATE TABLE `ski_production_record` (
   `inventory_id` int(11) DEFAULT NULL,
   `date` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_danish_ci;
+
+--
+-- Dumping data for table `ski_production_record`
+--
+
+INSERT INTO `ski_production_record` (`id`, `inventory_id`, `date`) VALUES
+(1, 1, '2022-05-14'),
+(2, 1, '2022-05-14');
 
 -- --------------------------------------------------------
 
@@ -688,7 +704,7 @@ ALTER TABLE `employee`
 -- AUTO_INCREMENT for table `inventory`
 --
 ALTER TABLE `inventory`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `manufacturer`
@@ -700,7 +716,7 @@ ALTER TABLE `manufacturer`
 -- AUTO_INCREMENT for table `order`
 --
 ALTER TABLE `order`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=100002;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=100003;
 
 --
 -- AUTO_INCREMENT for table `order_record`
@@ -748,7 +764,7 @@ ALTER TABLE `shipment_record`
 -- AUTO_INCREMENT for table `ski_production_record`
 --
 ALTER TABLE `ski_production_record`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `store_info`

@@ -2,13 +2,6 @@ from flask import Flask, request, jsonify
 from flask_mysqldb import MySQL
 import endpoints.transport.transporter as transporter
 
-def get_order_Testing(x,y):
-    print("mong")
-    if request.method == 'GET':
-        cur = x.connection.cursor()
-        
-    return "Internal error in database", 500
-
 # Get orders from status as customer rep
 def get_order_from_state(mysql):
     if request.method == 'GET':
@@ -32,9 +25,7 @@ def change_order_state(mysql):
     legalStates.append("new")
     legalStates.append("open")
     legalStates.append("skis available")
-    legalStates.append("ready to be shipped")
-    #legalStates.append("filled")
-  
+    legalStates.append("ready to be shipped")  
     
     if request.method == 'PATCH': 
         cur = mysql.connection.cursor()

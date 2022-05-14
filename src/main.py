@@ -31,7 +31,7 @@ def index():
         \n/storekeeper/orders GET\
         \n/storekeeper/changeorder POST\
         \n/customerrep/orders GET\
-        \n/customerrep/order PATCH\
+        \n/customerrep/setorderstatus PATCH\
         \n/productionplanner POST\
         \n/customer/cancelorder DELETE\
         \n/customer/orders/new POST\
@@ -105,7 +105,7 @@ def get_order_from_state():
     return customer_rep.get_order_from_state(mysql)
 
 # Set order status as customer rep for spesific orderid
-@app.route('/customerrep/order', methods=['PATCH'])
+@app.route('/customerrep/setorderstatus', methods=['PATCH'])
 def change_order_state():
     if role_user != "customer rep":
         response = '{"Error": "You are not authenticated for this endpoint.", \

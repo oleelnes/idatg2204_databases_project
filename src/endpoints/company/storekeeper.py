@@ -97,13 +97,14 @@ def post_new_entry_in_record(mysql):
             date = help.sanitize_input_date(content['date'])
         
         if inventoryid != "" and date != "":
-            entry = cur.execute("SELECT * FROM `ski_production_record` WHERE id = %s", (inventoryid,))
+            entry = cur.execute("SELECT * FROM `inventory` WHERE id = %s", (inventoryid,))
             if entry > 0:
-                entry.cur.fetchall()
+                entry = cur.fetchall()
                 post_entry = cur.execute("INSERT INTO `ski_production_record` (`inventory_id`, `date`) VALUES (%s, %s)",(inventoryid, date,))
+                mysql.connection.commit()
                 entry = cur.execute("SELECT * FROM `ski_production_record` WHERE inventory_id = %s", (inventoryid,))
             if entry > 0:
-                entry.cur.fetchall()
+                entry = cur.fetchall()
                 return jsonify(entry), 201
             else:
                 cur.close()
@@ -116,7 +117,7 @@ def post_new_entry_in_record(mysql):
 def get_orders(mysql):
     if request.method == 'GET':
         cur = mysql.connection.cursor()
-        id = help.sanitize_input_numbers(request.args.get('order_id'))
+        id = help.sanitize_input_numbers(request.args.get('orderid'))
         if id:
             retrieved_order = cur.execute("SELECT * FROM `order` WHERE `id`=%s", (id,))
         else:

@@ -23,7 +23,7 @@ def get_order_info_ready_to_be_shipped(mysql):
             orderid = content['orderid']
 
         if orderid:
-            order = cur.execute("SELECT * FROM `order` WHERE order_status='ready to be shipped' AND order_id = %s", (orderid,))
+            order = cur.execute("SELECT * FROM `order` WHERE order_status='ready to be shipped' AND id = %s", (orderid,))
             order = cur.fetchall()
         else:
             order = cur.execute("SELECT * FROM `order` WHERE order_status='ready to be shipped'")
