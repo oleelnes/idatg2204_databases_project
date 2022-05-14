@@ -15,7 +15,7 @@ app = Flask(__name__)
 app.config['MYSQL_HOST']="127.0.0.1"#"localhost"
 app.config['MYSQL_USER']="root"
 app.config['MYSQL_PASSWORD']=""
-app.config['MYSQL_DB']="idatg2204_2022_group12_v3"
+app.config['MYSQL_DB']="idatg2204_2022_group12"
 
 mysql = MySQL(app)
 
@@ -130,9 +130,20 @@ def new_user():
         username = request.args.get('username') 
         role = request.args.get('role')
 
+        if password is None or username is None or role is None:
+            return "Wrong format. Please input username, password and role.", 400
+
+        if username == "":
+            return "Username cannot be empty.", 400
+
         # It is not allowed to create a user with the role admin
         if role == "admin":
             return "You don't have the authentication to create an admin user!", 401
+
+        # Checking whether the role passed is valid or not
+        if role != "customer" and role != "storekeeper" and role != "productionplanner" and \
+            role != "transporter" and role != "customer rep":
+            return "Please select a valid role (customer, customer rep, storekeeper, productionplanner, transporter).", 400
 
         # Checking if the username is already exists in the database.
         checkUsername = cur.execute("SELECT * FROM `authentication` WHERE username=%s", (username,))
