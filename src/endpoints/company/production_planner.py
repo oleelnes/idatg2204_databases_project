@@ -20,7 +20,7 @@ def post_production_plan(mysql):
         if week != "" and int(week) < 50 and int(week) > 0 and productid != "" and day != "" and type != "" and productionAmount != "" and manufacturer_id != "":
             weeks = range(4)
             for i in weeks:
-                plan = cur.execute("INSERT INTO `production_plan` (`week_number`, `manafacturer_id`) VALUES (%s, %s)", (week, manufacturer_id,))
+                plan = cur.execute("INSERT INTO `production_plan` (`week_number`, `manufacturer_id`) VALUES (%s, %s)", (week, manufacturer_id,))
                 mysql.connection.commit()
                 typeData = cur.execute("INSERT INTO `production_type` \
                     (`production_week_number`, `product_id`, `day`, `type`, `production_amount`) \
@@ -28,7 +28,7 @@ def post_production_plan(mysql):
                 mysql.connection.commit()
                 week += 1
 
-            prodplan = cur.execute("SELECT * FROM `production_type` WHERE production_week_number BETWEEN %s AND %s", (week, week + 3,))
+            prodplan = cur.execute("SELECT * FROM `production_type` WHERE production_week_number BETWEEN %s AND %s", (week - 4, week,))
             if prodplan > 0:
                 prodplan = cur.fetchall()
                 cur.close()
