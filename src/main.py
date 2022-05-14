@@ -208,6 +208,14 @@ def get_order_info_ready_to_be_shipped():
         return json.loads(response), 401
     return transport.get_order_info_ready_to_be_shipped(mysql)
 
+# Changes the state of a shipment with order id in the Transporter endpoint
+@app.route('/transport/orderstatus', methods=['PATCH'])
+def change_shipment_state():
+    if role_user != "transporter":
+        response = '{"Error": "You are not authenticated for this endpoint.", \
+                "Try": "Log into a transporter user at endpoint authentication/login"}'
+        return json.loads(response), 401
+    return transport.change_shipment_state(mysql)
 
 if __name__ == '__main__':
     app.run(debug=True)
