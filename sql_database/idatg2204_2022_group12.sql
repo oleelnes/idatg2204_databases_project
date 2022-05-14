@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: May 14, 2022 at 06:21 PM
+-- Generation Time: May 14, 2022 at 10:34 PM
 -- Server version: 10.4.22-MariaDB
 -- PHP Version: 8.1.1
 
@@ -45,7 +45,8 @@ INSERT INTO `authentication` (`role`, `username`, `password_hashed`, `salt`) VAL
 ('admin', 'admin_user', 'ffd9dcae322857a2f8113a3a348dde5be2bfdcfee6ee17383ae93a6acb3ecb3d', 'eshdSfy1JQJI'),
 ('productionplanner', NULL, 'd207560814922c98f19cf9dea8b0ee7680c727abd75d6ca6ffde0490b7d067a5', '7z8ddZccyjfi'),
 ('productionplanner', 'prodplan1', 'd4219b6c2bd46de74c7c8c7f25bb227f6f56151a0a826cc0afa178a7f87b253a', 'yNNSXrtSaJU5'),
-('transporter', 'transport1', '6b0c218275ed34db56daffc20cb4e1f5d9d3a584a1834c9fcd6d6615f3f005c1', 'jO8jwnvLPeYg');
+('transporter', 'transport1', '6b0c218275ed34db56daffc20cb4e1f5d9d3a584a1834c9fcd6d6615f3f005c1', 'jO8jwnvLPeYg'),
+('storekeeper', 'storekeeper1', '90cffbc621ccdf4cd76c720678d589990081ed7a97a67f58e2c3a8f6beeedf82', 'Pz4wlCeSx3Qa');
 
 -- --------------------------------------------------------
 
@@ -161,7 +162,8 @@ CREATE TABLE `inventory` (
   `id` int(11) NOT NULL,
   `product_id` int(11) NOT NULL,
   `status` varchar(100) COLLATE utf8mb4_danish_ci DEFAULT NULL,
-  `passed_QA` tinyint(1) DEFAULT NULL
+  `passed_QA` tinyint(1) DEFAULT NULL,
+  `amount` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_danish_ci;
 
 -- --------------------------------------------------------
@@ -205,7 +207,27 @@ CREATE TABLE `order` (
 
 INSERT INTO `order` (`id`, `product_id`, `customer_id`, `ski_type`, `quantity`, `total_price`, `order_status`, `date`) VALUES
 (100000, 1, 300000, 'skate', 50, 6150, 'new', '2022-04-20'),
-(100001, 2, 300000, 'skate', 2, 200, 'skis available', '2022-04-22');
+(100001, 2, 300000, 'skate', 24, 200, 'skis available', '2022-04-22');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `order_record`
+--
+
+CREATE TABLE `order_record` (
+  `id` int(11) NOT NULL,
+  `order_id` int(11) DEFAULT NULL,
+  `quantity` int(11) DEFAULT NULL,
+  `date` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_danish_ci;
+
+--
+-- Dumping data for table `order_record`
+--
+
+INSERT INTO `order_record` (`id`, `order_id`, `quantity`, `date`) VALUES
+(1, 100001, 50, '2022-05-14');
 
 -- --------------------------------------------------------
 
@@ -376,7 +398,40 @@ CREATE TABLE `shipment` (
 --
 
 INSERT INTO `shipment` (`id`, `order_id`, `store_franchise_name`, `address`, `scheduled_pickup_date`, `state`, `transport_name`, `driver_id`) VALUES
-(7080800, 100000, 'best ski stores', 'heidalsvegen 3', '2022-04-20', 'in transit', 'heidis transport AS', 400000);
+(7080800, 100000, 'best ski stores', 'heidalsvegen 3', '2022-04-20', 'ready for pickup', 'heidis transport AS', 400000);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `shipment_record`
+--
+
+CREATE TABLE `shipment_record` (
+  `id` int(11) NOT NULL,
+  `shipment_id` int(11) DEFAULT NULL,
+  `state` varchar(100) COLLATE utf8mb4_danish_ci DEFAULT NULL,
+  `date` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_danish_ci;
+
+--
+-- Dumping data for table `shipment_record`
+--
+
+INSERT INTO `shipment_record` (`id`, `shipment_id`, `state`, `date`) VALUES
+(4, 7080800, 'in transit', '2022-05-14'),
+(5, 7080800, 'ready for pickup', '2022-05-14');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ski_production_record`
+--
+
+CREATE TABLE `ski_production_record` (
+  `id` int(11) NOT NULL,
+  `inventory_id` int(11) DEFAULT NULL,
+  `date` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_danish_ci;
 
 -- --------------------------------------------------------
 
@@ -517,6 +572,13 @@ ALTER TABLE `order`
   ADD KEY `fk_customer_id_order` (`customer_id`);
 
 --
+-- Indexes for table `order_record`
+--
+ALTER TABLE `order_record`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_order_record_order_id` (`order_id`);
+
+--
 -- Indexes for table `order_setting`
 --
 ALTER TABLE `order_setting`
@@ -557,6 +619,20 @@ ALTER TABLE `receive_shipment`
 ALTER TABLE `shipment`
   ADD PRIMARY KEY (`id`,`order_id`),
   ADD KEY `fk_order_id_shipment` (`order_id`);
+
+--
+-- Indexes for table `shipment_record`
+--
+ALTER TABLE `shipment_record`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_record_shipment_id` (`shipment_id`);
+
+--
+-- Indexes for table `ski_production_record`
+--
+ALTER TABLE `ski_production_record`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_ski_prod_rec_product_id` (`inventory_id`);
 
 --
 -- Indexes for table `store`
@@ -627,6 +703,12 @@ ALTER TABLE `order`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=100002;
 
 --
+-- AUTO_INCREMENT for table `order_record`
+--
+ALTER TABLE `order_record`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `order_setting`
 --
 ALTER TABLE `order_setting`
@@ -655,6 +737,18 @@ ALTER TABLE `receive_shipment`
 --
 ALTER TABLE `shipment`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7080801;
+
+--
+-- AUTO_INCREMENT for table `shipment_record`
+--
+ALTER TABLE `shipment_record`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `ski_production_record`
+--
+ALTER TABLE `ski_production_record`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `store_info`
@@ -710,6 +804,12 @@ ALTER TABLE `order`
   ADD CONSTRAINT `fk_product_id_order` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`);
 
 --
+-- Constraints for table `order_record`
+--
+ALTER TABLE `order_record`
+  ADD CONSTRAINT `fk_order_record_order_id` FOREIGN KEY (`order_id`) REFERENCES `order` (`id`);
+
+--
 -- Constraints for table `order_setting`
 --
 ALTER TABLE `order_setting`
@@ -733,6 +833,18 @@ ALTER TABLE `receive_shipment`
 --
 ALTER TABLE `shipment`
   ADD CONSTRAINT `fk_order_id_shipment` FOREIGN KEY (`order_id`) REFERENCES `order` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `shipment_record`
+--
+ALTER TABLE `shipment_record`
+  ADD CONSTRAINT `fk_record_shipment_id` FOREIGN KEY (`shipment_id`) REFERENCES `shipment` (`id`);
+
+--
+-- Constraints for table `ski_production_record`
+--
+ALTER TABLE `ski_production_record`
+  ADD CONSTRAINT `fk_ski_prod_rec_product_id` FOREIGN KEY (`inventory_id`) REFERENCES `inventory` (`id`);
 
 --
 -- Constraints for table `store`
