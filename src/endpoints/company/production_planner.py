@@ -5,17 +5,22 @@ from flask_mysqldb import MySQL
 def post_production_plan(mysql):
     cur = mysql.connection.cursor()
     content = request.get_json()
-    month = content['month']
-    productid = content['productid']
-    day = content['day']
-    type = content['type']
-    productionAmount = content['productionAmount']
+    if content:
+        month = content['month']
+        productid = content['productid']
+        day = content['day']
+        type = content['type']
+        productionAmount = content['productionAmount']
+        manufacturer_id = content['manufacturerid']
+    else:
+        cur.close()
+        return "Bad request", 404
 
     if month != "" and productid != "":
         week = 4 * int(month)
         weeks = range(4)
         for i in weeks:
-            plan = cur.execute("INSERT INTO `production_plan` (`week_number`, `manafacturer_id`) VALUES (%s, '200000')", (week,))
+            plan = cur.execute("INSERT INTO `production_plan` (`week_number`, `manafacturer_id`) VALUES (%s, '%s')", (week, manufacturer_id))
             mysql.connection.commit()
             typeData = cur.execute("INSERT INTO `production_type` \
                 (`production_week_number`, `product_id`, `day`, `type`, `production_amount`) \

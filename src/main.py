@@ -8,6 +8,7 @@ import endpoints.company.storekeeper as storekeeper
 import endpoints.company.production_planner as prod_plan
 import endpoints.public.public as public
 import endpoints.customer.customer as customer
+import endpoints.transport.transporter as transport
 
 app = Flask(__name__)
 
@@ -26,6 +27,7 @@ def index():
     message = "Up and running!\nSee the endpoints:\n\n/public"
     return message
 
+# Public, gets information about all skis
 @app.route('/public', methods=['GET'])
 def get_skis():
     return public.get_skis(mysql)
@@ -50,12 +52,12 @@ def get_order_from_state():
 
 # Set order status as customer rep for spesific orderid
 @app.route('/customerrep/order', methods=['PATCH'])
-def post_order_state():
+def change_order_state():
     if role_user != "customer rep":
         response = '{"Error": "You are not authenticated for this endpoint.", \
             "Try": "Log into a customer rep user at endpoint authentication/login"}'
         return json.loads(response), 401
-    return customer_rep.post_order_state(mysql)
+    return customer_rep.change_order_state(mysql)
 
 # Adds a new production plan from post with json
 @app.route('/productionplanner', methods=['POST'])
@@ -197,7 +199,23 @@ def createSalt():
 def createHashedPassword(password, salt):
     return pbkdf2_hmac('sha256', str.encode(password), str.encode(salt), 200000)
 
+# Transporter get info about one or multiple orders in the ready to be shipped state
+@app.route('/transport/orderinfo', methods=['GET'])
+def get_order_info_ready_to_be_shipped():
+    if role_user != "transporter":
+        response = '{"Error": "You are not authenticated for this endpoint.", \
+                "Try": "Log into a transporter user at endpoint authentication/login"}'
+        return json.loads(response), 401
+    return transport.get_order_info_ready_to_be_shipped(mysql)
 
+# Changes the state of a shipment with order id in the Transporter endpoint
+@app.route('/transport/orderstatus', methods=['PATCH'])
+def change_shipment_state():
+    if role_user != "transporter":
+        response = '{"Error": "You are not authenticated for this endpoint.", \
+                "Try": "Log into a transporter user at endpoint authentication/login"}'
+        return json.loads(response), 401
+    return transport.change_shipment_state(mysql)
 
 if __name__ == '__main__':
     app.run(debug=True)
