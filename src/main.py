@@ -41,6 +41,15 @@ def get_skis_available_orders():
         return json.loads(response), 401
     return storekeeper.get_skis_available_orders(mysql)
 
+# Set QA pass or not passed on inventory
+@app.route('/storekeeper/orders/inventoryQA', methods=['GET'])
+def change_inventory_QA_status():
+    if role_user != "storekeeper":
+        response = '{"Error": "You are not authenticated for this endpoint.", \
+            "Try": "Log into a storekeeper user at endpoint authentication/login"}'
+        return json.loads(response), 401
+    return storekeeper.change_inventory_QA_status(mysql)
+
 # Get orders from status as customer rep
 @app.route('/customerrep/orders', methods=['GET'])
 def get_order_from_state():
