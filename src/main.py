@@ -68,7 +68,7 @@ def post_production_plan():
 # Delete a given order
 @app.route('/customer/cancelorder', methods=['DELETE'])
 def delete_order():
-    if role_user != "customer" or role_user != "customer rep" or role_user != "storekeeper":
+    if role_user != "customer" and role_user != "customer rep" and role_user != "storekeeper":
         response = '{"Error": "You are not authenticated for this endpoint.", \
             "Try": "Log into a customer user at endpoint authentication/login"}'
         return json.loads(response), 401
@@ -78,7 +78,7 @@ def delete_order():
 # Create new orders
 @app.route('/customer/orders/new', methods=['POST'])
 def place_order():
-    if role_user != "customer" or role_user != "customer rep" or role_user != "storekeeper":
+    if role_user != "customer" and role_user != "customer rep" and role_user != "storekeeper":
         response = '{"Error": "You are not authenticated for this endpoint.", \
             "Try": "Log into a customer user at endpoint authentication/login"}'
         return json.loads(response), 401
@@ -87,7 +87,7 @@ def place_order():
 # Retrieve a four week production plan summary
 @app.route('/customer/productionplan', methods=['GET'])
 def get_production_plan_summary():
-    if role_user != "customer" or role_user != "customer rep" or role_user != "storekeeper":
+    if role_user != "customer" and role_user != "customer rep" and role_user != "storekeeper":
         response = '{"Error": "You are not authenticated for this endpoint.", \
             "Try": "Log into a customer user at endpoint authentication/login"}'
         return json.loads(response), 401
@@ -96,7 +96,7 @@ def get_production_plan_summary():
 # Retrieve a specific order
 @app.route('/customer/orderbyid', methods=['GET'])
 def get_order_by_id():
-    if role_user != "customer" or role_user != "customer rep" or role_user != "storekeeper":
+    if role_user != "customer" and role_user != "customer rep" and role_user != "storekeeper":
         response = '{"Error": "You are not authenticated for this endpoint.", \
             "Try": "Log into a customer user at endpoint authentication/login"}'
         return json.loads(response), 401
@@ -105,7 +105,7 @@ def get_order_by_id():
 # Retrieve orders with since filter
 @app.route('/customer/orderssince', methods=['GET'])
 def get_orders_since():
-    if role_user != "customer" or role_user != "customer rep" or role_user != "storekeeper":
+    if role_user != "customer" and role_user != "customer rep" and role_user != "storekeeper":
         response = '{"Error": "You are not authenticated for this endpoint.", \
             "Try": "Log into a customer user at endpoint authentication/login"}'
         return json.loads(response), 401
@@ -116,14 +116,25 @@ def get_orders_since():
 def new_user():
     if request.method ==  'POST':
         print("role: " + role_user)
+
+        # User must be admin in order to create new users. TODO: change?
         if role_user != "admin":
             return "You are not authenticated for creating new users.", 401
         cur = mysql.connection.cursor()
         password = request.args.get('password')
         username = request.args.get('username') 
         role = request.args.get('role')
+
+        # It is not allowed to create a user with the role admin
         if role == "admin":
             return "You don't have the authentication to create an admin user!", 401
+
+        # Checking if the username is already exists in the database.
+        checkUsername = cur.execute("SELECT * FROM `authentication` WHERE username=%s", (username,))
+        if checkUsername > 0:
+            return "A user with that username already exists.", 403
+
+        # Creating the salt and hashed password and inserting it into the database
         salt = createSalt()
         hashedpassword = createHashedPassword(password, salt)
         store = cur.execute("INSERT INTO `authentication` (`role`, `username`, `password_hashed`, `salt`) \

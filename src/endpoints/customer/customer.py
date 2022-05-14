@@ -71,7 +71,6 @@ def get_orders_since(mysql):
         if date is None:
             return "Date must be entered as a key.", 400
         
-        #"SELECT * FROM `order` BETWEEN %s AND CURDATE() ORDER BY date asc"
         orders = cur.execute("SELECT * FROM `order` WHERE `date` BETWEEN %s AND CURDATE() ORDER BY date asc", (date,))
         orders = cur.fetchall()
         cur.close()
@@ -80,6 +79,17 @@ def get_orders_since(mysql):
     else:
         return "Wrong method. Only GET is supported.", 405
 
+def get_production_plan_summary(mysql):
+    if request.method == 'GET':
+        cur = mysql.connection.cursor()
 
+        orders = cur.execute("SELECT * FROM `production_plan` WHERE week_number BETWEEN WEEK(CURDATE()) \
+            AND WEEK(CURDATE())-4 GROUP BY week_number ORDER BY week_number asc")
+        orders = cur.fetchall()
+
+        cur.close()
+        return jsonify(orders), 200
+    else:
+        return "Wrong method. Only GET is supported.", 405
         
 
