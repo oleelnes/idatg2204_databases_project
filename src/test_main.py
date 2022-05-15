@@ -22,11 +22,6 @@ class Test_Main(unittest.TestCase):
         self.assertEqual(response.headers["Content-Type"],"application/json")
         self.assertEqual(response.status_code,200)
 
-    
-    def test_2_new_order_correct_input(self):
-        response = requests.post(Test_Main.NEW_ORDER_ENDPOINT, json=Test_Main.NEW_ORDER_CORRECT_INPUT_JSON)
-        self.assertEqual(response.headers["Content-type"], "application/json")
-        self.assertEqual(response.status_code, 200)
-
+ 
 #if __name__ == '__main__':
  #   unittest.main()

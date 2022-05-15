@@ -250,6 +250,90 @@ expected output:
 
 ## Customer endpoint
 
+**127.0.0.1:5000/customer/orders/new**  
+Example input:
+```json
+{
+    "id":"22112",
+    "product_id":"121121",
+    "customer_id":"0192189",
+    "ski_type":"skate",
+    "quantity":"12",
+    "total_price": "121",
+    "order_status": "new",
+    "date": "2022-05-05"
+}
+```
+Example output:
+```json
+[
+    "22112",
+    "121121",
+    "0192189",
+    "skate",
+    "12",
+    "121",
+    "new",
+    "2022-05-05"
+]
+```
+
+**127.0.0.1:5000/orderssince?date=YYYY-MM-DD**
+Date must be inputted as a parameter in the URL in this format: YYYY-MM-DD.
+
+Example output:
+```json
+[
+    [
+        "22112",
+        "121121",
+        "0192189",
+        "skate",
+        "12",
+        "121",
+        "new",
+        "2022-05-03"
+    ],
+    [
+        "221121",
+        "121121",
+        "0192189",
+        "skate",
+        "12",
+        "121",
+        "new",
+        "2022-05-05"
+    ],
+    etc.
+]
+```
+
+**127.0.0.1:5000/customer/productionplan**
+This endpoint returns a summary of the production plans for the coming four weeks.
+
+**127.0.0.1:5000/customer/cancelorder?id=ID**
+This endpoint deletes an order from the database. The id that must be passed as a parameter in the URL is the id of the order.
+
+Expected output: "successfully deleted order with id ID".
+
+**127.0.0.1:5000/customer/orderbyid?id=ID**
+This endpoint returns an order as given by an order's id as inputted in the URL.
+
+Example output:
+```json
+[
+    "22112",
+    "121121",
+    "0192189",
+    "skate",
+    "12",
+    "121",
+    "new",
+    "2022-05-05"
+]
+```
+
+
 ## Transport endpoint
 **127.0.0.1:5000/transport/orderinfo GET**  
 Works with and without input!  
