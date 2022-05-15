@@ -55,7 +55,14 @@ def get_order_by_id(mysql):
     if request.method == 'GET':
         cur = mysql.connection.cursor()
         id = request.args.get('order_id')
+        if id is None:
+            return "Id must be entered as a key.", 400
+            
         retrieved_order = cur.execute("SELECT * FROM `order` WHERE `id`=%s", (id,))
+
+        if retrieved_order == 0:
+            return "There exists no order with id " + id + " in the database.", 400
+
         retrieved_order = cur.fetchall()
         cur.close()
         return jsonify(retrieved_order), 200
@@ -84,7 +91,7 @@ def get_production_plan_summary(mysql):
         cur = mysql.connection.cursor()
 
         orders = cur.execute("SELECT * FROM `production_plan` WHERE week_number BETWEEN WEEK(CURDATE()) \
-            AND WEEK(CURDATE())-4 GROUP BY week_number ORDER BY week_number asc")
+            AND WEEK(CURDATE())+4 GROUP BY week_number ORDER BY week_number asc")
         orders = cur.fetchall()
 
         cur.close()
