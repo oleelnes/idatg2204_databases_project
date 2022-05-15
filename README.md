@@ -46,8 +46,58 @@ Create a new db named **idatg2204_2022_group12** with utf8mb4_danish_ci in phpmy
 Import the **idatg2204_2022_group12.sql** file located in the folder *sql_database*.  
 Run main.py in normal "mode" not debugging mode. 
 
+# Endpoints
+## Users
+| username  |  password |  usergroup |
+|:---:|:---:|:---:|
+|  admin_user |  admin1 |  admin |
+|  transport1 | tran1 |  transporter |
+|  storekeeper1 |  stor1 |  storekeeper |
+| prodplan1  |  prod1 |  productionplanner |
+| customer_rep_user  |  secret999 |  customer rep |
+| customer_user  |  passord123 |  customer |
+
 ## Default 127.0.0.1:5000 GET request
 Prints out all of the available endpoints.
+
+## Authentication endpoint
+
+**127.0.0.1:5000/authentication/login**  
+Admin:  
+username: admin_user  
+password: admin1  
+
+Example input:
+```json
+{
+    "username":"transport1",
+    "password": "tran1"
+}
+```
+Example output:
+```json
+Successfully logged into user transport1, role: transporter
+```
+
+**127.0.0.1:5000/authentication/newuser?username=&password=&role=**  
+User creation:
+- **Step 1 log in as ADMIN see credentials above**  
+- Step 2 use the uri and fill in username, password and role
+
+Example:  
+127.0.0.1:5000/authentication/newuser?username=storekeeper1&password=stor1&role=storekeeper
+
+Example output:  
+```json
+[
+    [
+        "storekeeper",
+        "storekeeper1",
+        "90cffbc621ccdf4cd76c720678d589990081ed7a97a67f58e2c3a8f6beeedf82",
+        "Pz4wlCeSx3Qa"
+    ]
+]
+```
 
 ## Public endpoint
 For public endpoint with all models use this uri: *127.0.0.1:5000/public*  
@@ -252,41 +302,3 @@ Example output:
 
 
 
-## Authentication endpoint
-
-**127.0.0.1:5000/authentication/login**  
-Admin:  
-username: admin_user  
-password: admin1  
-
-Example input:
-```json
-{
-    "username":"transport1",
-    "password": "tran1"
-}
-```
-Example output:
-```json
-Successfully logged into user transport1, role: transporter
-```
-
-**127.0.0.1:5000/authentication/newuser?username=&password=&role=**  
-User creation:
-- **Step 1 log in as ADMIN see credentials above**  
-- Step 2 use the uri and fill in username, password and role
-
-Example:  
-127.0.0.1:5000/authentication/newuser?username=storekeeper1&password=stor1&role=storekeeper
-
-Example output:  
-```json
-[
-    [
-        "storekeeper",
-        "storekeeper1",
-        "90cffbc621ccdf4cd76c720678d589990081ed7a97a67f58e2c3a8f6beeedf82",
-        "Pz4wlCeSx3Qa"
-    ]
-]
-```
